@@ -1,0 +1,249 @@
+.MainClock .time {
+    display: inline-block;
+    font-size: 20px;
+}
+.MainClock .sec {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.MainClock{
+	float:left;
+}
+
+.startday{
+	position: absolute;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 20;
+	/* gradient */
+	background: rgb(255,255,255); /* Old browsers */
+	background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 46%, rgba(209,209,209,1) 99%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(46%,rgba(255,255,255,1)), color-stop(99%,rgba(209,209,209,1))); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 46%,rgba(209,209,209,1) 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 46%,rgba(209,209,209,1) 99%); /* Opera 12+ */
+	background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 46%,rgba(209,209,209,1) 99%); /* IE10+ */
+	background: radial-gradient(ellipse at center,  rgba(255,255,255,1) 46%,rgba(209,209,209,1) 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d1d1d1',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+}
+
+.thetasks{
+	display: inline;
+}
+
+.startday .btn{
+	position: relative;
+	top: 48%;
+	margin: 0 auto;
+	width: 200px;
+	display: block;
+	height: 50px;
+	line-height: 35px;
+	font-size: 20px;
+	font-family: cursive;
+}
+
+.viewPast {
+    position: relative;
+	top: 48.4%;
+	margin: 0 auto;
+	width: 150px;
+	cursor: pointer;
+	text-decoration: underline;
+	color: #000;
+}
+
+.viewPast:hover{
+	color: rgb(213, 128, 0)
+}
+
+.settings{
+	font-size: 22px;
+	color: #DADADA;
+	position: relative;
+	top: 9px;
+	cursor: pointer;
+}
+
+.DayProgress {
+    margin-top: 50px;
+    height: 50px;
+    border: 1px solid #E0E0E0;
+    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.DayProgress div {
+    height: 100%;
+    display: inline-block;
+    background-color: #E0E0E0;
+}
+.DayProgress div:hover {
+	border-right: 1px solid #B4AEAE;
+	border-left: 1px solid #B4AEAE;	
+}
+.DayProgress div:first-child:hover{
+	border-left: none;
+}
+.DayProgress div.currenttask {
+	border-right: 1px solid #DB0B0B;
+	background-color: #F7F7F7;
+}
+
+.DayProgress div.type-lunch{
+	background-color: #39B3D7;
+	border-color: #269ABC;
+	color: #FFF;
+}
+
+.DayProgress div.type-nonbillable{
+	background-color: #990404;
+}
+
+
+.dayReport tr.endday{
+	background-color: #DDD;
+}
+
+
+.tasks{
+	display:inline;
+}
+
+.task {
+	width: 100px;
+	height: 100px;
+	margin-right: 5px;
+	margin-top: 5px;
+	display: inline-block;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	text-align: center;
+}
+
+.task.blur,
+.task:hover{
+	-webkit-box-shadow: 0px 0px 11px rgba(50, 50, 50, 0.99);
+	-moz-box-shadow:    0px 0px 11px rgba(50, 50, 50, 0.99);
+	box-shadow:         0px 0px 11px rgba(50, 50, 50, 0.99);
+}
+
+.task.new{
+	background-color: #E7E7E7;
+	color: #B6B6B6;
+}
+
+.task .icon i {
+	font-size: 40px;
+	margin-top: 10px;
+}
+
+.task .name {
+	height: 20px;
+	overflow: hidden;
+}
+/*
+.type-jira{
+	background-color: #DD6100;
+	color: #FFF;
+}
+
+.type-lunch{
+	background-color: #39B3D7;
+	color: #FFF;
+}
+
+.type-generaltask{
+	background-color: #2CB32C;
+	color: #FFF;
+}
+
+.type-nonbillable{
+	background-color: #990404;
+	color: #FFF;
+}
+*/
+.type-selector .resumetask,
+.type-selector .type-option{
+	width: 100px;
+	text-align: center;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.type-selector .resumetask img,
+.type-selector .type-option img {
+height: 100px;
+}
+
+
+.resume-option {
+	background-color: #BDBDBD;
+	margin: 5px;
+	width: 122px;
+	display: inline-block;
+	color: #FFF;
+	text-align: center;
+	padding: 5px;
+	border: 1px solid #979797;
+	cursor: pointer;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#TaskModal .modal-body textarea{
+	width: 538px;
+	min-height: 142px;
+}
+
+#TaskModal .timespent{
+	display: block;
+	width: 62px;
+	text-align: center;
+	margin: auto;
+	color: #008000;
+}
+
+#TaskModal .endtime{
+	width: 110px;
+	float: right;
+	height: 20px;
+}
+#TaskModal .starttime{
+	width: 110px;
+	float: left;
+	height: 20px;
+}
+
+#SettingsModal hr{
+	margin-bottom: 5px;
+}
+
+#SettingsModal .SectionTitle{
+	display: block;
+	font-weight: bold;
+	margin-bottom: 8px;	
+}
+
+#SettingsModal input[name="daylength"]{
+	width: 34px;
+	height: 22px;
+	border: 1px solid rgb(214, 214, 214);
+}
+
+@media screen and (max-width: 600px){
+	.task{
+		width:100%;
+		height: 35px;
+	}
+	
+	.task .icon{
+		display:none;
+	}
+}
