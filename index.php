@@ -1,13 +1,16 @@
 <?php 
-$siteurl = "http://depole.me/myday";
+$siteurl = "http://localhost:1010/worklogtrackergithub";
+$version = 2.3;
 ?>
 
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Questrial' rel='stylesheet' type='text/css'>
+        <meta name="description" content="">
 		<meta name="author" content="">
 		<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
 		<title>My Day - Time Planner</title>
@@ -25,30 +28,48 @@ $siteurl = "http://depole.me/myday";
 		<![endif]-->
 		
 		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="<?php echo $siteurl; ?>/js/javascriptTools.js?<?php echo $version; ?>"></script>
 		<script src="<?php echo $siteurl; ?>/bootstrap/js/bootstrap.min.js"></script>
+        <script src="<?php echo $siteurl; ?>/js/moment.js"></script>
 		<script src="<?php echo $siteurl; ?>/js/backstretch.js"></script>
 		<script src="<?php echo $siteurl; ?>/js/cookie.js"></script>
-		<script src="<?php echo $siteurl; ?>/js/myday.js"></script>
+		<script src="<?php echo $siteurl; ?>/js/myday.js?<?php echo $version; ?>"></script>
+        <script src="<?php echo $siteurl; ?>/js/keypress-2.1.0.min.js"></script>
+        <script src="<?php echo $siteurl; ?>/js/keyboardEvents.js?<?php echo $version; ?>"></script>
+        <script src="<?php echo $siteurl; ?>/js/propertyPicker.js?<?php echo $version; ?>"></script>
 		<!-- <script src="<?php echo $siteurl; ?>/timepicker/jquery.timepickr.js"></script>
 		<script src="<?php echo $siteurl; ?>/timepicker/ui.timepickr.js"></script> -->
 		
 	</head>
 	<body>
+
 		<div class="startday" style="display:none;">
-			<div class="btn btn-success openStartModel"> Start My Day </div>
-			<div class="viewPast"> View Past Day's Tasks</div>
+            <div class="whiteOut"></div>
+            <div class="wrapper">
+                <span class="logo"> TrakWork </span>
+                <div class="shawdow">
+                    <span class="tagline"> A quick and easy way to track your day </span>
+                </div>
+                <div class="btn btn-success openStartModel"> Start My Day </div>
+                <div class="viewPast"> View Past Day's Tasks</div>
+            </div>
 		</div>
 		<script>
 			$(document).ready(function(){
-				$(".startday").backstretch("http://depole.me/myday/images/time_2.jpg");
-				if(typeof Tasks[0] != "undefined"){
-					today = new Date;
-					today = today.getYear() +  today.getMonth() + today.getDate(); 
-					
-					firstTaskInMemory = new Date(Tasks[0].start);
-					taskStart = firstTaskInMemory.getYear() +  firstTaskInMemory.getMonth() + firstTaskInMemory.getDate(); 
-					
+                setTimeout(function(){
+                    $(".whiteOut").fadeOut( 1000 );
+                }, 1200);
+
+				$(".startday").backstretch("<?php echo $siteurl; ?>/images/home-1.jpg");
+				if(Tasks.length > 0){
+					var today = new Date();
+					today = today.getYear() +  today.getMonth() + today.getDate();
+
+					var firstTaskInMemory = new Date(Tasks[0].start);
+					var taskStart = firstTaskInMemory.getYear() +  firstTaskInMemory.getMonth() + firstTaskInMemory.getDate();
+
 					if(today > taskStart){
+                        Tasks = [];
 						$(".startday").show();
 						$(".task.new").hide();
 					}
@@ -62,8 +83,9 @@ $siteurl = "http://depole.me/myday";
 					$(".startday").hide();
 				});
 				
-				$(".openStartModel").click(function(){
-					$("#StartTaskModal").modal();
+                $(".openStartModel").click(function(){
+                    TaskPicker.Reset();
+					TaskPicker.Show();
 					ClearDay();
 				});
 			});
@@ -75,7 +97,7 @@ $siteurl = "http://depole.me/myday";
 		</div>
 		
 		
-		<div class="container">
+		<div class="container app">
 			<div class="tasks"></div>
 			<div class="task new" data-task_id="x">
 				<div class="icon"><i class="fa fa-plus"></i></div>
@@ -93,17 +115,18 @@ $siteurl = "http://depole.me/myday";
 		
 		<script>
 			$(".task.new").click(function(){
-				resetTaskPicker();
-				$("#StartTaskModal").modal();
+				TaskPicker.Reset();
+				TaskPicker.Show();
 			});
+
 		</script>
 		
 	</body>
 	
-	
-	
 	<!-- modal stuff -->
 	<?php include 'TaskPicker.php'; ?>
-	<?php include 'TaskModal.php'; ?>
+    <!-- a -->
+	<?php require 'TaskModal.php'; ?>
+    <!-- b -->
 	<?php include 'SettingsModal.php'; ?>
 </html>
