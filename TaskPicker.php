@@ -30,6 +30,8 @@
 
                     <div class="colorPicker"></div>
 
+                    <div class="iconPicker"></div>
+
                     <input type="hidden" name="resumeTaskID">
                     <input type="hidden" name="tasktype">
 

@@ -13,15 +13,12 @@ var TaskPicker = new function(){
     this.colorPicker = new ColorPicker( $("#StartTaskModal .colorPicker") );
     this.startTimePicker = new StartTimePicker( $("#StartTaskModal .startTime") );
     this.estimate = new EstimatePicker( this.elm.find(".estimate") );
-
-
+    this.iconPicker = new IconPicker(this.elm.find(".iconPicker"));
 
     this.elm.find(".modal-footer .btn").hover(function(){
         _taskpicker.colorPicker.hideOptions();
         _taskpicker.startTimePicker.hideOptions();
     });
-
-
 
     this.SelectType = function(type){
         var typeObject = $.grep(TaskPickerTypes, function(e){ return e.type == type; })[0];
@@ -37,6 +34,7 @@ var TaskPicker = new function(){
         this.elm.find('.type-options input[name="tasktype"]').val(type);
         this.elm.find(".type-options, .modal-footer").show();
         this.elm.find(".type-selector").hide();
+        this.iconPicker.SelectIcon(typeObject.icon);
 
         //Colors
         this.colorPicker.setOption(typeObject.color);
@@ -45,7 +43,7 @@ var TaskPicker = new function(){
 
     this.ResumeTaskPicker = function(){
         this.elm.find(".resumetasks-chooser").show();
-        this.elm.find(".type-selector").hide();
+        this.elm.find(".type-selector, .estimate, .colorPicker, .iconPicker").hide();
         this.elm.find(".resume-option").unbind();
         console.log(Tasks);
         for(var i in Tasks){
@@ -78,8 +76,9 @@ var TaskPicker = new function(){
         var colorKey = this.elm.find('input[name="color"]').val();
         var color = $.grep(TaskStyles, function(e){ return e.name == colorKey })[0];
         var resumeID = this.elm.find('input[name="resumeTaskID"]').val();
+        var icon = this.elm.find('input[name="icon"]').val();
 
-        var id = StartTask(type, name, $('#StartTaskModal input[name="startTimeValue"]').val(), color);
+        var id = StartTask(type, name, $('#StartTaskModal input[name="startTimeValue"]').val(), color, icon);
 
         SetEstimate(id, this.estimate.GetValue());
 
@@ -109,7 +108,7 @@ var TaskPicker = new function(){
     }
 
     this.Reset = function(){
-        this.elm.find(".type-selector").show();
+        this.elm.find(".type-selector, .estimate, .colorPicker, iconPicker").show();
         this.elm.find(".modal-footer,  .type-options,  .resume-option").hide();
         this.elm.find('input[name="goal"]').val("");
         this.elm.find('input[name="resumeTaskID"]').val("");

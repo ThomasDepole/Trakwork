@@ -1,6 +1,6 @@
 <?php 
 $siteurl = "http://localhost:1010/worklogtrackergithub";
-$version = 2.3;
+$version = 2.5;
 ?>
 
 <html lang="en">
@@ -18,7 +18,7 @@ $version = 2.3;
 		<link href="<?php echo $siteurl; ?>/bootstrap/css/bootstrap.css" rel="stylesheet">
 		<link href="<?php echo $siteurl; ?>/styles.css" rel="stylesheet">
 		<!-- <link href="<?php echo $siteurl; ?>/timepicker/jquery.timepickr.css" rel="stylesheet"> --> 
-		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
 		<!-- Custom styles for this template -->
 		<!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -50,7 +50,11 @@ $version = 2.3;
                 <div class="shawdow">
                     <span class="tagline"> A quick and easy way to track your day </span>
                 </div>
-                <div class="btn btn-success openStartModel"> Start My Day </div>
+                <div class="buttonContainer">
+                    <div class="btn btn-success openStartModel"> Start My Day </div>
+                    <div class="btn btn-warning learnMore"> Learn More </div>
+                </div>
+
                 <div class="viewPast"> View Past Day's Tasks</div>
             </div>
 		</div>
@@ -88,8 +92,20 @@ $version = 2.3;
 					TaskPicker.Show();
 					ClearDay();
 				});
+
+                $(".btn.learnMore").click(function(){
+                    $("#LearnMore").show();
+                    $(".startDay").slideUp();
+                    $("#App").hide();
+                });
+
+                $.get("<?php echo $siteurl; ?>/icons.php", function(res){
+                    icons = res.split(",");
+                });
 			});
 		</script>
+
+        <?php include 'LearnMore.php'; ?>
 		
 		<div class="container">
 			<div class="MainClock">Loading</div>
@@ -97,10 +113,10 @@ $version = 2.3;
 		</div>
 		
 		
-		<div class="container app">
+		<div id="App" class="container">
 			<div class="tasks"></div>
 			<div class="task new" data-task_id="x">
-				<div class="icon"><i class="fa fa-plus"></i></div>
+				<div class="icon"><i class="fa fa-random"></i></div>
 				<div class="name">Start Your Day</div>
 			</div>
 			

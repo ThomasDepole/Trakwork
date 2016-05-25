@@ -102,6 +102,21 @@ label {
 
 }
 
+.startday .buttonContainer .btn {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#LearnMore {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
 .ProgressBar{
 	height: 50px;
     border: 1px solid #E0E0E0;
@@ -141,7 +156,7 @@ label {
 }
 
 .settings{
-	font-size: 22px;
+	font-size: 22px !important;
 	color: #DADADA;
 	position: relative;
 	top: 9px;
@@ -321,6 +336,7 @@ height: 100px;
     height: 27px;
 }
 
+.inputBoxLabel + div,
 .inputBoxLabel + input{
     width: 30px;
     border: 1px solid #C6C6C6;
@@ -331,6 +347,7 @@ height: 100px;
     border-bottom-right-radius: 4px;
     border-top-right-radius: 4px;
     padding-left: 5px;
+    vertical-align: top;
 }
 
 /* Property Picker */
@@ -354,7 +371,7 @@ height: 100px;
 
 .propertyPicker.colorPicker .options{
     width: 79px;
-    height: 69px;
+    height: 98px;
     padding: 3px;
 }
 
@@ -384,6 +401,11 @@ height: 100px;
     color: #ccc;
 }
 
+.propertyPicker .iconDisplay{
+    text-align: center;
+    line-height: 24px;
+}
+
 .estimatepicker{
     vertical-align: top;
 }
@@ -394,7 +416,7 @@ height: 100px;
 
 .estimatePicker .estimatelabel + input {
     width: 67px;
-    color: #2E7D90;
+    color: #414141;
     vertical-align: top;
     padding-left: 12px;
 }
@@ -417,7 +439,6 @@ height: 100px;
     width: 71px;
     cursor: pointer;
  }
-
 
 .Estimates{
 	margin-top: 30px;
@@ -448,6 +469,52 @@ height: 100px;
 	color: #FFF;
 }
 
+
+#icon-picker {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(186, 186, 186, 0.94);
+    overflow: scroll;
+    padding: 17px 33px 0 33px;
+    z-index: 1100;
+}
+
+#icon-picker .options .fa {
+    width: 50px;
+    height: 50px;
+    vertical-align: top;
+    border-radius: 4px;
+    margin: 5px;
+    font-size: 40px;
+    background-color: #fff;
+    padding-top: 6px;
+    text-align: center;
+    cursor: pointer;
+}
+#icon-picker .options .fa:hover{
+    background-color: #ED9026;
+    color:#fff;
+}
+
+#icon-picker .options .exit.fa {
+    width: 90px;
+    height: 90px;
+    border: none;
+    font-size: 98px;
+    text-align: center;
+    line-height: 85px;
+    float: right;
+    margin-right: 42px;
+    background: none;
+    cursor: pointer;
+}
+
+#icon-picker .options .exit.fa:hover{
+    color: #ED9026;
+}
 /*
 .EstimateProgress.Notice .Progress{
 	background-color: rgb(255, 232, 189);
@@ -478,8 +545,17 @@ height: 100px;
     }
 
     #StartTaskModal .task{
-        width: 55px !important;
-        height: 53px;
+        width: 86px !important;
+        height: 73px;
+        font-size: 15px;
+    }
+
+    #StartTaskModal .type-selector {
+        text-align: center;
+    }
+
+    #StartTaskModal .type-selector .fa {
+        font-size: 30px !important;
     }
 
     .modal-dialog {
@@ -499,7 +575,7 @@ height: 100px;
         width: 100%;
     }
 
-    .container.app {
+    #App {
         padding: 0;
     }
 
@@ -521,6 +597,27 @@ height: 100px;
     .DayProgress.ProgressBar {
         border-radius: 0;
         border: 0;
+        margin-top: 0;
+        height: 60px;
+    }
+
+    .progress-times {
+        display: block;
+        width: 100%;
+        padding: 0 8px;
+    }
+
+    .tasks {
+    }
+
+    .propertyPicker {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .propertyPicker .options{
+        position: inherit;
+        top: auto;
     }
 
 }

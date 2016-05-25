@@ -5,6 +5,8 @@ var Settings = new Array();
 var TaskStyles = new Array();
 var DayProgressMax = 480;
 var DefaultDayLength = 480;
+var icons; //loaded in index TODO find a better way to load these
+
 
 $(document).ready(function(){
     LoadTasks();
@@ -23,6 +25,9 @@ TaskStyles.push(new TaskStyle("purple", "#8300DD", "#FFF") );
 TaskStyles.push(new TaskStyle("lightpurple", "#B32C74", "#FFF") );
 TaskStyles.push(new TaskStyle("midnightblue", "#003366", "#FFF") );
 TaskStyles.push(new TaskStyle("silver", "#B6B6B6", "#FFF") );
+TaskStyles.push(new TaskStyle("crimson", "#F95252", "#FFF") );
+TaskStyles.push(new TaskStyle("black", "#000000", "#FFF") );
+TaskStyles.push(new TaskStyle("yellow", "#EDD320", "#FFF") );
 
 /** Time Functions **/
 Date.prototype.addMinutes = function(minutes) {
@@ -187,6 +192,11 @@ function LoadTasks(){
                 Tasks[id].color = $.grep(TaskStyles, function(e){ return e.name == "silver" })[0];
             else
                 Tasks[id].color = temp[i].color;
+
+            if(typeof temp[i].icon == "undefined" )
+                Tasks[id].icon = "fa-exclamation";
+            else
+                Tasks[id].icon = temp[i].icon;
         }
         $(".task.new .name").html("Change Task");
     }
@@ -227,29 +237,28 @@ function LoadEstimates(){
 
 /** Rendering **/
 function RenderTasks(selector){
+    $(".tasks .task").unbind();
     $(selector).html("");
 
     for(var i in Tasks){
-        var icon;
         var t = Tasks[i];
-        switch(Tasks[i].type){
-            case "ticket" : icon = "fa-briefcase"; break;
-            case "lunch" : icon = "fa-apple"; break;
-            case "nonbillable" : icon = "fa-exclamation-triangle"; break;
-            case "generaltask" : icon = "fa-file-o"; break;
-            case "endday" : icon = "fa-beer"; break;
-        }
         var color = t.color;
-
+        var icon = t.icon;
         //Link Overrides
         if(t.link_id != null){
             color = Tasks[t.link_id].color;
+            icon =  Tasks[t.link_id].icon;
         }
 
 
         var div = '<div class="task type-'+ t.type+'" data-task_id="'+ i +'" style="background-color: '+ color.color+' ; color: '+ color.fontcolor +' ;" ><div class="icon"><i class="fa '+ icon +'"></i></div><div class="name">'+ t.name +'</div></div>';
         $(selector).append(div);
     }
+
+    $(".tasks .task").click(function(){
+        var id = $(this).attr("data-task_id");
+        TaskDetails.OpenTask(id);
+    });
 }
 
 function RenderDayProgress(){
@@ -365,7 +374,7 @@ function RenderDayReport(){
         if(Tasks[i].link_id == null){
             colCount += 1;
             totalhours += parseFloat(gethours(i));
-            singleTaskhour = gethours(i);
+            var singleTaskhour = gethours(i);
 
             //get linked tasks
             for(var r in Tasks){
@@ -394,7 +403,7 @@ function RenderDayReport(){
                         TotalDayHours += parseFloat(gethours(e));
                 }
                 //Add End Day
-                html += '<tr class="endday"> <td > '+colCount+' </td> <td> '+Tasks[i].name+' </td> <td> '+Tasks[i].StartTime()+' </td> <td>  </td> <td> </td> <td>'+ TotalDayHours +'</td> </tr> ';
+                html += '<tr class="endday"> <td > '+colCount+' </td> <td> '+Tasks[i].name+' </td> <td> '+Tasks[i].StartTime()+' </td> <td>  </td> <td> </td> <td>'+ TotalDayHours.toFixed(2) +'</td> </tr> ';
             }
 
 
@@ -531,7 +540,7 @@ function GetSetting(key){
 
 //////////////////////////////////
 // Task Object and functions
-function Task(type, name, link_id, start_time, color){
+function Task(type, name, link_id, start_time, color, icon){
     this.type = type;
     this.name = name;
     this.start = start_time;
@@ -539,6 +548,7 @@ function Task(type, name, link_id, start_time, color){
     this.link_id = link_id;
     this.notes = null;
     this.color = color;
+    this.icon = icon;
 
     this.StartTime = function(){
         var date = new Date(this.start);
@@ -554,7 +564,7 @@ function Task(type, name, link_id, start_time, color){
             var html = '' + time[0] + ':' + time[1] + time[3];
             return html
         }else{
-            return null;
+            return "active";
         }
     }
 
@@ -571,7 +581,7 @@ function Task(type, name, link_id, start_time, color){
 }
 
 
-function StartTask(type, name, startTime, color){
+function StartTask(type, name, startTime, color, icon){
     if(typeof startTime == "undefined")
         startTime = Date.now();
     else
@@ -580,15 +590,14 @@ function StartTask(type, name, startTime, color){
     if(Tasks.length > 0)
         Tasks[Tasks.length - 1].end = startTime;
 
-    var id = Tasks.push( new Task(type, name, null, startTime, color));
+    if(typeof icon == "undefined")
+        icon = "fa-file-o";
+
+    var id = Tasks.push( new Task(type, name, null, startTime, color, icon));
     id = id - 1;
     return id
 }
 
-function ResumeTask(id){
-    var old = Tasks[id];
-    return Tasks.push( new Task(old.type, old.name, id)  );
-}
 /////////////////////////////
 
 ////////////////////////////////////////

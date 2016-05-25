@@ -3,7 +3,7 @@ var ColorPicker = function(elm){
     elm.addClass("propertyPicker colorPicker unselectable")
 
     //add the picker html
-    elm.html('<div class="inputBoxLabel">Color</div><input type="text" name="colorPreview"><input type="hidden" name="color"><div class="colorPicker options"></div>');
+    elm.html('<div class="inputBoxLabel">Color</div><input type="text" name="colorPreview"><input type="hidden" name="color"><div class="options"></div>');
 
     //need a better way to wait for the options to be loaded before referencing it
     $(function(){
@@ -158,4 +158,40 @@ var EstimatePicker = function(elm){
     elm.find(".decrease2").click(function(){
         _estimatePicker.setEstimate((_estimatePicker.estimate -.50));
     });
+}
+
+var IconPicker = function(elm){
+    var _iconPicker = this;
+    elm.addClass("propertyPicker iconPicker unselectable");
+
+    elm.html('<div class="inputBoxLabel">Icon</div> <div class="iconDisplay fa" ></div> <input type="hidden" name="icon">');
+
+    elm.click(function(){
+       _iconPicker.ShowOptions();
+    });
+
+    this.ShowOptions = function(){
+        $("body").append('<div id="icon-picker"> <div class="options"><div class="exit fa fa-close"></div></div></div>');
+        for(var i in icons){
+            $("#icon-picker .options").append('<div class="option fa '+icons[i]+'" data-icon="'+icons[i].trim()+'" ></div>');
+        }
+        $("#icon-picker .exit").click(function(){
+            _iconPicker.HideOptions();
+        });
+        $("#icon-picker .option").click(function(){
+            _iconPicker.SelectIcon($(this).attr("data-icon"));
+            _iconPicker.HideOptions();
+        });
+    }
+
+    this.HideOptions = function(){
+        $("#icon-picker .exit").unbind();
+        $("#icon-picker").remove();
+    }
+
+    this.SelectIcon = function(icon){
+        elm.find('input[name="icon"]').val(icon);
+        elm.find('.iconDisplay').attr("class", "iconDisplay fa " + icon);
+    }
+
 }
