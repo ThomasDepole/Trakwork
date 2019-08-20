@@ -1,5 +1,5 @@
 <?php 
-$siteurl = "http://localhost:1010/worklogtrackergithub";
+$siteurl = "http://trakwork.local";
 $version = 2.5;
 ?>
 
