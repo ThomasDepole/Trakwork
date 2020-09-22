@@ -1,5 +1,5 @@
 // Add default task type
-TaskPickerType.AddType("ticket", "Ticket Item", "fa-briefcase", true, true, "Ticket Number", "orange");
+//TaskPickerType.AddType("ticket", "Ticket Item", "fa-briefcase", true, true, "Ticket Number", "orange");
 TaskPickerType.AddType("generaltask", "Task", "fa-file-o", true, true, "Task Name", "green");
 TaskPickerType.AddType("lunch", "Take Lunch", "fa-apple", false, false, "Lunch", "lightblue");
 TaskPickerType.AddType("nonbillable", "Non Billable", "fa-exclamation-triangle", false, false, "Non Billable", "red");

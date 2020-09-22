@@ -5,19 +5,24 @@
                 <div id="Canvas">
                     <div  data-scene="1">
                         <div class="infoBox">
-                            Trakwork is a very lightweight day tracker that helps you track all the tasks. It's designed to be effortless, and forces you to not leave gaps in your day, so when you reached then end of your day, all your tasks adds up.
-                            <div class="btn btn-warning continue" onclick="learnMore.NextScene()"> Continue </div>
+                            Trakwork is a lightweight time tracker that helps you track all your work throughout the day. 
+                            It's designed to be effortless, and forces you to not leave gaps in your day, so when you reached then end of your day 
+                            all your work adds up. This tool is designed for people that need to track billable hours, great for contractors! 
+                            <div class="btn btn-success continue" onclick="learnMore.NextScene()"> Show me how it works! </div>
+                            <div class="btn btn-warning exitTutorial">Exit Tutorial </div>
                         </div>
                     </div>
 
                     <div  data-scene="2">
                         <div class="infoBox">
                             <div class="tasksArea"></div>
-                            <div class="progressBar"></div>
+                            <div class="progressBar"><div data-task_id="0" class="type-generaltask currenttask" style="width: 12.916666666666668%; "></div></div>
 
                             <div class="pointer">
                                 <div class="arrow-border"></div><div class="arrow"></div>
-                                This is your progress bar, it shows you how much of your day you have completed. By default it's setup for an 8 hour work day. You can change your day length in your settings, but we will go over that later.
+                                This is your progress bar, it shows you how much of your day you have completed. 
+                                By default it's setup for an 8 hour work day. You can change your day length in your settings, 
+                                but we will go over that later.
 
                                 <div class="btn btn-warning continue" onclick="learnMore.NextScene()"> Continue </div>
                             </div>
@@ -27,7 +32,7 @@
                     <div  data-scene="3">
                         <div class="infoBox">
                             <div class="tasksArea"></div>
-                            <div class="progressBar"></div>
+                            <div class="progressBar"><div data-task_id="0" class="type-generaltask currenttask" style="width: 12.916666666666668%; "></div></div>
                             <div class="startTime">9:00am</div>
                             <div class="endTime">5:00pm</div>
 
@@ -63,12 +68,24 @@
                                     <div class="icon"><i class="fa fa-inbox"></i></div>
                                     <div class="name">Task 1</div>
                                 </div>
+                                <div class="task" style="background-color: #39B3D7 ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 2</div>
+                                </div>
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 3</div>
+                                </div>
                                 <div class="task new" data-task_id="x">
                                     <div class="icon"><i class="fa fa-random"></i></div>
                                     <div class="name">Change Task</div>
                                 </div>
                             </div>
-                            <div class="progressBar"></div>
+                            <div class="progressBar">
+                                <div data-task_id="0" class="type-generaltask endedtask" style="width: 8.541666666666666%; background-color:#2CB32C"></div>
+                                <div data-task_id="1" class="type-generaltask endedtask" style="width: 4.583333333333333%; background-color:#39B3D7"></div>
+                                <div data-task_id="2" class="type-generaltask currenttask" style="width: 1.875%; background-color:#2CB32C"></div>
+                            </div>
                             <div class="startTime">9:00am</div>
                             <div class="endTime">5:00pm</div>
 
@@ -81,6 +98,271 @@
                         </div>
                     </div>
 
+                    <div  data-scene="6">
+                        <div class="infoBox">
+                            <div class="tasksArea">
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 1</div>
+                                </div>
+                                <div class="task" style="background-color: #39B3D7 ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 2</div>
+                                </div>
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 3</div>
+                                </div>
+                                <div class="task new" data-task_id="x">
+                                    <div class="icon"><i class="fa fa-random"></i></div>
+                                    <div class="name">Change Task</div>
+                                </div>
+                            </div>
+                            <div class="progressBar">
+                                <div data-task_id="0" class="type-generaltask endedtask" style="width: 8.541666666666666%; background-color:#2CB32C"></div>
+                                <div data-task_id="1" class="type-generaltask endedtask" style="width: 4.583333333333333%; background-color:#39B3D7"></div>
+                                <div data-task_id="2" class="type-generaltask currenttask" style="width: 1.875%; background-color:#2CB32C"></div>
+                            </div>
+                            <div class="startTime">9:00am</div>
+                            <div class="endTime">5:00pm</div>
+
+                            <div class="pointer">
+                                <div class="arrow-border"></div><div class="arrow"></div>
+                                The progress bar shows you tasks as time goes on.
+                                <div class="btn btn-warning continue" onclick="learnMore.NextScene()"> Continue </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  data-scene="7">
+                        <div class="infoBox">
+                            <div class="tasksArea">
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 1</div>
+                                </div>
+                                <div class="task" style="background-color: #39B3D7 ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 2</div>
+                                </div>
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 3</div>
+                                </div>
+                                <div class="task new" data-task_id="x">
+                                    <div class="icon"><i class="fa fa-random"></i></div>
+                                    <div class="name">Change Task</div>
+                                </div>
+                            </div>
+                            <div class="progressBar">
+                                <div data-task_id="0" class="type-generaltask endedtask" style="width: 8.541666666666666%; background-color:#2CB32C"></div>
+                                <div data-task_id="1" class="type-generaltask endedtask" style="width: 4.583333333333333%; background-color:#39B3D7"></div>
+                                <div data-task_id="2" class="type-generaltask currenttask" style="width: 1.875%; background-color:#2CB32C"></div>
+                            </div>
+                            <div class="startTime">9:00am</div>
+                            <div class="endTime">5:00pm</div>
+
+                            <div class="pointer">
+                                <div class="arrow-border"></div><div class="arrow"></div>
+                                This is how you change the task you're working on. This is very important! 
+                                You can't stop tracking your day until you're finished with your day. You must transtion to another task. 
+                                If you're taking a break or doing something that doesn't count towards your day for example a lunch break you can 
+                                change to a non-billable task. We will explain how that works later.
+                                <div class="btn btn-warning continue" onclick="learnMore.NextScene()"> Continue </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  data-scene="8">
+                        <div class="infoBox">
+                            <div class="tasksArea">
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 1</div>
+                                </div>
+                                <div class="task" style="background-color: #39B3D7 ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 2</div>
+                                </div>
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 3</div>
+                                </div>
+                                <div class="task new" data-task_id="x">
+                                    <div class="icon"><i class="fa fa-random"></i></div>
+                                    <div class="name">Change Task</div>
+                                </div>
+                            </div>
+                            <div class="progressBar">
+                                <div data-task_id="0" class="type-generaltask endedtask" style="width: 8.541666666666666%; background-color:#2CB32C"></div>
+                                <div data-task_id="1" class="type-generaltask endedtask" style="width: 4.583333333333333%; background-color:#39B3D7"></div>
+                                <div data-task_id="2" class="type-generaltask currenttask" style="width: 1.875%; background-color:#2CB32C"></div>
+                            </div>
+                            <div class="startTime">9:00am</div>
+                            <div class="endTime">5:00pm</div>
+
+                            <div class="pointer">
+                                <div class="arrow-border"></div><div class="arrow"></div>
+                                Here you can pick the next task to switch too. Let's go through them.
+                                <div class="btn btn-warning continue" onclick="learnMore.NextScene()"> Continue </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  data-scene="9">
+                        <div class="infoBox">
+                            <div class="tasksArea">
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 1</div>
+                                </div>
+                                <div class="task" style="background-color: #39B3D7 ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 2</div>
+                                </div>
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 3</div>
+                                </div>
+                                <div class="task new" data-task_id="x">
+                                    <div class="icon"><i class="fa fa-random"></i></div>
+                                    <div class="name">Change Task</div>
+                                </div>
+                            </div>
+                            <div class="progressBar">
+                                <div data-task_id="0" class="type-generaltask endedtask" style="width: 8.541666666666666%; background-color:#2CB32C"></div>
+                                <div data-task_id="1" class="type-generaltask endedtask" style="width: 4.583333333333333%; background-color:#39B3D7"></div>
+                                <div data-task_id="2" class="type-generaltask currenttask" style="width: 1.875%; background-color:#2CB32C"></div>
+                            </div>
+                            <div class="startTime">9:00am</div>
+                            <div class="endTime">5:00pm</div>
+
+                            <div class="pointer">
+                                <div class="arrow-border"></div><div class="arrow"></div>
+                                This is a task that counts towards your day. Tasks don't affect the end time of your day. (I'll explain why that matters next)
+                                <div class="btn btn-warning continue" onclick="learnMore.NextScene()"> Continue </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  data-scene="10">
+                        <div class="infoBox">
+                            <div class="tasksArea">
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 1</div>
+                                </div>
+                                <div class="task" style="background-color: #39B3D7 ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 2</div>
+                                </div>
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 3</div>
+                                </div>
+                                <div class="task new" data-task_id="x">
+                                    <div class="icon"><i class="fa fa-random"></i></div>
+                                    <div class="name">Change Task</div>
+                                </div>
+                            </div>
+                            <div class="progressBar">
+                                <div data-task_id="0" class="type-generaltask endedtask" style="width: 8.541666666666666%; background-color:#2CB32C"></div>
+                                <div data-task_id="1" class="type-generaltask endedtask" style="width: 4.583333333333333%; background-color:#39B3D7"></div>
+                                <div data-task_id="2" class="type-generaltask currenttask" style="width: 1.875%; background-color:#2CB32C"></div>
+                            </div>
+                            <div class="startTime">9:00am</div>
+                            <div class="endTime">5:00pm</div>
+
+                            <div class="pointer">
+                                <div class="arrow-border"></div><div class="arrow"></div>
+                                This is a non-billable task. Non-billable tasks will add to the end time of your day. 
+                                You would use this if you're doing something that doesn't count towards your billable hours.
+                                For example if you started your day at 9am and the end of your day is at 5pm, if you start a 
+                                non-billable task for 30min the end of your day will be 5:30pm. So only use this if what you're doing
+                                doesn't count torwards your day like taking a break or taking lunch (you can use a regular task if your lunch is billable)
+
+                                <div class="btn btn-warning continue" onclick="learnMore.NextScene()"> Continue </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  data-scene="11">
+                        <div class="infoBox">
+                            <div class="tasksArea">
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 1</div>
+                                </div>
+                                <div class="task" style="background-color: #39B3D7 ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 2</div>
+                                </div>
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 3</div>
+                                </div>
+                                <div class="task new" data-task_id="x">
+                                    <div class="icon"><i class="fa fa-random"></i></div>
+                                    <div class="name">Change Task</div>
+                                </div>
+                            </div>
+                            <div class="progressBar">
+                                <div data-task_id="0" class="type-generaltask endedtask" style="width: 8.541666666666666%; background-color:#2CB32C"></div>
+                                <div data-task_id="1" class="type-generaltask endedtask" style="width: 4.583333333333333%; background-color:#39B3D7"></div>
+                                <div data-task_id="2" class="type-generaltask currenttask" style="width: 1.875%; background-color:#2CB32C"></div>
+                            </div>
+                            <div class="startTime">9:00am</div>
+                            <div class="endTime">5:00pm</div>
+
+                            <div class="pointer">
+                                <div class="arrow-border"></div><div class="arrow"></div>
+                                You can resume tasks you already started during the day. I'll exlain why this feature is useful next!
+
+                                <div class="btn btn-warning continue" onclick="learnMore.NextScene()"> Continue </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  data-scene="12">
+                        <div class="infoBox">
+                            <div class="tasksArea">
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 1</div>
+                                </div>
+                                <div class="task" style="background-color: #39B3D7 ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 2</div>
+                                </div>
+                                <div class="task" style="background-color: #2CB32C ; color: #FFF ;">
+                                    <div class="icon"><i class="fa fa-inbox"></i></div>
+                                    <div class="name">Task 3</div>
+                                </div>
+                                <div class="task new" data-task_id="x">
+                                    <div class="icon"><i class="fa fa-random"></i></div>
+                                    <div class="name">Change Task</div>
+                                </div>
+                            </div>
+                            <div class="progressBar">
+                                <div data-task_id="0" class="type-generaltask endedtask" style="width: 8.541666666666666%; background-color:#2CB32C"></div>
+                                <div data-task_id="1" class="type-generaltask endedtask" style="width: 4.583333333333333%; background-color:#39B3D7"></div>
+                                <div data-task_id="2" class="type-generaltask currenttask" style="width: 1.875%; background-color:#2CB32C"></div>
+                            </div>
+                            <div class="startTime">9:00am</div>
+                            <div class="endTime">5:00pm</div>
+
+                            <div class="pointer">
+                                <div class="arrow-border"></div><div class="arrow"></div>
+                                You can end your day at any time. After you end your day 
+                                a report will appear that shows you all the time you spent on your tasks. Here's the best part,
+                                you can also resume tasks you already started during the day, if you resume a task the report will add 
+                                all the time you worked on that task! Great for those crazy days when you're jumping around tasks.
+
+                                <div class="btn btn-warning continue" onclick="learnMore.NextScene()"> Continue </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
 
 
@@ -92,149 +374,41 @@
 <script type="text/javascript" src="js/SoupAnimations.js" ></script>
 <script>
     var animations = {
-        scene5 : function(){
+        scene1 : function(){
             this.start = function(){
-                console.log("started");
+                $(".task.new").hide();
+            }
+            this.stop = function(){
+                console.log("ended");
+            }
+        },
+        scene7 : function(){
+            this.start = function(){
+                $(".task.new").show();
+            }
+            this.stop = function(){
+                console.log("ended");
+            }
+        },
+        scene8 : function(){
+            this.start = function(){
+                $(".task.new").click();
+                $(".endDay-option").show();
+                $(".resumetask").show();
             }
             this.stop = function(){
                 console.log("ended");
             }
         }
     };
+
     var learnMore = new SoupAnimations($("#LearnMore #Canvas"), animations);
     learnMore.ChangeScene(1);
+
+    $(".btn.exitTutorial").click(function(){
+        $("#LearnMore").hide();
+        $(".startDay").slideDown();
+        $("#App").show();
+        ClearDay();
+    });
 </script>
-
-
-<style>
-    #LearnMore #Canvas{
-        position: relative;
-        height: 100%;
-    }
-
-    #LearnMore .tasksArea{
-        height: 187px;
-        padding-top: 32px;
-    }
-
-    #LearnMore .startTime, .endTime {
-        display: inline-block;
-    }
-
-    #LearnMore .endTime {
-        float: right;
-    }
-
-    #LearnMore #Canvas .btn.continue{
-        display: block;
-        width: 80px;
-        margin: 10px auto auto auto;
-    }
-
-    #LearnMore .pointer {
-        font-size: 12px;
-        color: #000;
-        background-color: #FFF;
-        width: 350px;
-        position: relative;
-        padding: 10px;
-        border: 1px solid #666;
-        right: 0px;
-        -webkit-box-shadow: #666 0px 0px 10px;
-        -moz-box-shadow: #666 0px 0px 10px;
-        box-shadow:#666 0px 0px 10px;
-        -moz-border-radius:3px;
-        -webkit-border-radius:3px;
-        border-radius:3px;
-        z-index: 100;
-    }
-    #LearnMore .pointer .arrow  {
-        height:0;
-        width:0;
-        position:absolute;
-        top:-30px;
-        left:31px;
-        border-top-width: 15px;
-        border-right-width: 15px;
-        border-bottom-width: 15px;
-        border-left-width: 15px;
-        border-top-style: solid;
-        border-right-style: solid;
-        border-bottom-style: solid;
-        border-left-style: solid;
-        border-top-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: #FFFFFF;
-        border-left-color: transparent;
-        margin: 0px;
-        margin-left: 1px;
-        padding: 0px;
-    }
-    #LearnMore .pointer .arrow-border  {
-        height:0;
-        width:0;
-        position:absolute;
-        top:-33px;
-        left: 31px;
-        border-top-width: 16px;
-        border-right-width: 16px;
-        border-bottom-width: 16px;
-        border-left-width: 16px;
-        border-top-style: solid;
-        border-right-style: solid;
-        border-bottom-style: solid;
-        border-left-style: solid;
-        border-top-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: #333;
-        border-left-color: transparent;
-        margin: 0px;
-        padding: 0px;
-    }
-
-    #LearnMore #Canvas [data-scene]{
-        display: none;
-        position: absolute;
-        top: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    #LearnMore #Canvas [data-scene="1"] .infoBox{
-        width: 420px;
-        margin: auto;
-        width: 420px;
-        position: absolute;
-        left: 50%;
-        margin-left: -220px;
-        top: 50%;
-        height: 160px;
-    }
-
-
-    #LearnMore #Canvas [data-scene="2"] .pointer{
-        top: 30px;
-    }
-
-    #LearnMore #Canvas [data-scene="3"] .pointer{
-        top: 18px;
-    }
-    #LearnMore #Canvas [data-scene="3"] .pointer .arrow,
-    #LearnMore #Canvas [data-scene="3"] .pointer .arrow-border{
-        left: 4px;
-    }
-
-    #LearnMore #Canvas [data-scene="4"] .pointer{
-        top: 18px;
-        left: 790px
-    }
-    #LearnMore #Canvas [data-scene="4"] .pointer .arrow,
-    #LearnMore #Canvas [data-scene="4"] .pointer .arrow-border{
-        left: 305px;
-    }
-
-    #LearnMore #Canvas [data-scene="5"] .pointer{
-        bottom: 100px;
-    }
-    
-</style>

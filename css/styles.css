@@ -1,0 +1,779 @@
+body {
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+label {
+  font-weight: normal;
+}
+
+.whiteOut {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #D3D3D3;
+  z-index: 25;
+}
+
+.MainClock .time {
+  display: inline-block;
+  font-size: 20px;
+}
+
+.MainClock .sec {
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.MainClock {
+  float: left;
+}
+
+.unselectable {
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  /*
+      Introduced in IE 10.
+      See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+    */
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.startday .logo {
+  font-family: 'Lobster', cursive;
+  text-align: center;
+  color: #fff;
+  font-size: 70px;
+  text-shadow: 2px 2px #0A0A0A;
+  height: 19px;
+  position: relative;
+  z-index: 27;
+}
+
+.startday .tagline {
+  text-align: center;
+  color: #fff;
+  text-shadow: 2px 2px #0A0A0A;
+  position: relative;
+  /* bottom: 45px; */
+  font-family: 'Questrial', sans-serif;
+  font-size: 17px;
+}
+
+.startday .shawdow {
+  background-color: rgba(0, 0, 0, 0.33);
+  margin: auto;
+  width: 305px;
+  text-align: center;
+  -webkit-box-shadow: 0px 0px 21px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 11px 0px rgba(0, 0, 0, 0.65);
+  border-radius: 3px;
+  position: relative;
+  bottom: 22px;
+}
+
+.startday .wrapper {
+  position: relative;
+  top: 42%;
+  text-align: center;
+}
+
+.startday {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  /* gradient */
+  background: white;
+  /* Old browsers */
+  /* FF3.6+ */
+  /* Chrome,Safari4+ */
+  /* Chrome10+,Safari5.1+ */
+  /* Opera 12+ */
+  /* IE10+ */
+  background: radial-gradient(ellipse at center, white 46%, #d1d1d1 99%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d1d1d1',GradientType=1 );
+  /* IE6-9 fallback on horizontal gradient */
+}
+
+.startday .buttonContainer .btn {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+#LearnMore {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  height: 100%;
+  width: 100%;
+  display: none;
+}
+
+.thetasks {
+  display: inline;
+}
+
+.startday .btn {
+  margin: 0 auto;
+  width: 200px;
+  display: block;
+  height: 50px;
+  line-height: 35px;
+  font-size: 20px;
+  font-family: cursive;
+  margin-top: 18px;
+}
+
+.viewPast {
+  position: relative;
+  top: 48.4%;
+  margin: 0 auto;
+  width: 150px;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #000;
+}
+
+.viewPast:hover {
+  color: #d58000;
+}
+
+.settings {
+  font-size: 22px !important;
+  color: #DADADA;
+  position: relative;
+  top: 9px;
+  cursor: pointer;
+}
+
+.DayProgress {
+  margin-top: 50px;
+}
+
+.ProgressBar {
+  height: 50px;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ProgressBar div {
+  height: 100%;
+  display: inline-block;
+  background-color: #E0E0E0;
+  float: left;
+}
+
+.ProgressBar div:hover {
+  border-right: 1px solid #B4AEAE;
+  border-left: 1px solid #B4AEAE;
+}
+
+.ProgressBar div:first-child:hover {
+  border-left: none;
+}
+
+.ProgressBar div.currenttask {
+  border-right: 1px solid #DB0B0B;
+  background-color: #F7F7F7;
+}
+
+.ProgressBar div.type-lunch {
+  background-color: #39B3D7;
+  border-color: #269ABC;
+  color: #FFF;
+}
+
+.ProgressBar div.type-nonbillable {
+  background-color: #990404;
+}
+
+.dayReport tr.endday {
+  background-color: #DDD;
+}
+
+#TaskModal #TaskName {
+  border: 1px solid #FFF;
+  width: 400px;
+}
+
+.tasks {
+  display: inline;
+}
+
+.task {
+  width: 100px;
+  height: 100px;
+  margin-right: 5px;
+  margin-top: 5px;
+  display: inline-block;
+  border-radius: 4px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.task.blur,
+.task:hover {
+  -webkit-box-shadow: 0px 0px 11px rgba(50, 50, 50, 0.99);
+  box-shadow: 0px 0px 11px rgba(50, 50, 50, 0.99);
+}
+
+.task.new {
+  background-color: #E7E7E7;
+  color: #B6B6B6;
+}
+
+.task .icon i {
+  font-size: 40px;
+  margin-top: 10px;
+}
+
+.task .name {
+  height: 20px;
+  overflow: hidden;
+}
+
+/*
+.type-jira{
+	background-color: #DD6100;
+	color: #FFF;
+}
+
+.type-lunch{
+	background-color: #39B3D7;
+	color: #FFF;
+}
+
+.type-generaltask{
+	background-color: #2CB32C;
+	color: #FFF;
+}
+
+.type-nonbillable{
+	background-color: #990404;
+	color: #FFF;
+}
+*/
+.type-selector .resumetask,
+.type-selector .type-option {
+  width: 100px;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.type-selector .resumetask img,
+.type-selector .type-option img {
+  height: 100px;
+}
+
+.resume-option {
+  background-color: #BDBDBD;
+  margin: 5px;
+  width: 122px;
+  display: inline-block;
+  color: #FFF;
+  text-align: center;
+  padding: 5px;
+  border: 1px solid #979797;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#TaskModal .modal-body textarea {
+  width: 538px;
+  min-height: 142px;
+}
+
+#TaskModal .timespent {
+  display: block;
+  width: 62px;
+  text-align: center;
+  margin: auto;
+  color: #008000;
+}
+
+#TaskModal .endtime {
+  width: 110px;
+  float: right;
+  height: 20px;
+}
+
+#TaskModal .starttime {
+  width: 110px;
+  float: left;
+  height: 20px;
+}
+
+#SettingsModal hr {
+  margin-bottom: 5px;
+}
+
+#SettingsModal .SectionTitle {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.inputBoxLabel {
+  display: inline-block;
+  border: 1px solid #C6C6C6;
+  border-right: none;
+  padding: 2px 10px 2px 7px;
+  border-radius: 4px;
+  background-color: #F0F0F0;
+  height: 27px;
+}
+
+.inputBoxLabel + div,
+.inputBoxLabel + input {
+  width: 30px;
+  border: 1px solid #C6C6C6;
+  border-left: none;
+  height: 27px;
+  position: relative;
+  right: 7px;
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+  padding-left: 5px;
+  vertical-align: top;
+}
+
+/* Property Picker */
+.propertyPicker {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+.propertyPicker .options {
+  position: absolute;
+  top: 25px;
+  background: #F0F0F0;
+  bottom: 3px;
+  border: 1px solid #C6C6C6;
+  border-top: none;
+  display: none;
+  text-align: center;
+  padding-top: 9px;
+}
+
+.propertyPicker.colorPicker .options {
+  width: 79px;
+  height: 98px;
+  padding: 3px;
+}
+
+.propertyPicker.colorPicker .color-option {
+  display: inline-block;
+  width: 19px;
+  height: 18px;
+  margin: 2px;
+}
+
+.propertyPicker.startTimePicker .options {
+  height: 40px;
+  width: 152px;
+}
+
+.propertyPicker.estimatePicker .options .btn,
+.propertyPicker.startTimePicker .options .btn {
+  padding: 6px;
+  border: 1px solid #CFCFCF;
+  line-height: 7px;
+  background-color: #fff;
+}
+
+.propertyPicker.estimatePicker .options .btn.disabled,
+.propertyPicker.startTimePicker .options .btn.disabled {
+  background-color: #F0F0F0;
+  color: #ccc;
+}
+
+.propertyPicker .iconDisplay {
+  text-align: center;
+  line-height: 24px;
+}
+
+.estimatepicker {
+  vertical-align: top;
+}
+
+.estimatePicker .estimatelabel {
+  vertical-align: top;
+}
+
+.estimatePicker .estimatelabel + input {
+  width: 67px;
+  color: #414141;
+  vertical-align: top;
+  padding-left: 12px;
+}
+
+.estimatePicker .options {
+  width: 133px;
+  height: 40px;
+  vertical-align: top;
+}
+
+#starttaskmodal .typeLabel + input {
+  width: 160px;
+  border: none;
+  border-bottom: 1px solid gray;
+  padding-left: 6px;
+}
+
+#StartTaskModal .startTimeLabel + input {
+  width: 71px;
+  cursor: pointer;
+}
+
+.Estimates {
+  margin-top: 30px;
+}
+
+.EstimateProgress.ProgressBar {
+  margin-top: 8px;
+  position: relative;
+}
+
+.EstimateProgress .EstimateLabel {
+  position: absolute;
+  top: 13px;
+  left: 5px;
+  color: #808080;
+}
+
+.EstimateProgress .Progress {
+  height: 100%;
+}
+
+.EstimateProgress.Warning .Progress {
+  background-color: #c40000;
+}
+
+.EstimateProgress.Warning .EstimateLabel {
+  color: #FFF;
+}
+
+#icon-picker {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(186, 186, 186, 0.94);
+  overflow: scroll;
+  padding: 17px 33px 0 33px;
+  z-index: 1100;
+}
+
+#icon-picker .options .fa {
+  width: 50px;
+  height: 50px;
+  vertical-align: top;
+  border-radius: 4px;
+  margin: 5px;
+  font-size: 40px;
+  background-color: #fff;
+  padding-top: 6px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#icon-picker .options .fa:hover {
+  background-color: #ED9026;
+  color: #fff;
+}
+
+#icon-picker .options .exit.fa {
+  width: 90px;
+  height: 90px;
+  border: none;
+  font-size: 98px;
+  text-align: center;
+  line-height: 85px;
+  float: right;
+  margin-right: 42px;
+  background: none;
+  cursor: pointer;
+}
+
+#icon-picker .options .exit.fa:hover {
+  color: #ED9026;
+}
+
+/*
+.EstimateProgress.Notice .Progress{
+	background-color: rgb(255, 232, 189);
+}
+.EstimateProgress.Notice .EstimateLabel{
+	color: #FF7A00;
+}
+*/
+.EstimateProgress.ProgressBar .TimeRemaining {
+  position: absolute;
+  right: 10px;
+  top: 14px;
+  color: red;
+}
+
+@media screen and (max-width: 600px) {
+  .tasks .task,
+  .task.new {
+    width: 76px;
+    height: 58px;
+  }
+  i.fa {
+    font-size: 21px !important;
+  }
+  #StartTaskModal .task {
+    width: 86px !important;
+    height: 73px;
+    font-size: 15px;
+  }
+  #StartTaskModal .type-selector {
+    text-align: center;
+  }
+  #StartTaskModal .type-selector .fa {
+    font-size: 30px !important;
+  }
+  .modal-dialog {
+    padding: 0;
+  }
+  .modal-content {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+  }
+  #TaskModal #TaskName {
+    width: auto;
+  }
+  #TaskModal .modal-body textarea {
+    width: 100%;
+  }
+  #App {
+    padding: 0;
+  }
+  .tasks .task,
+  .task.new {
+    margin: 0 -1px 0 0;
+    border-radius: 0;
+  }
+  .task.new {
+    position: relative;
+    right: 3px;
+  }
+  .DayProgress {
+    margin-top: 22px;
+  }
+  .DayProgress.ProgressBar {
+    border-radius: 0;
+    border: 0;
+    margin-top: 0;
+    height: 60px;
+  }
+  .progress-times {
+    display: block;
+    width: 100%;
+    padding: 0 8px;
+  }
+  .propertyPicker {
+    display: block;
+    margin-bottom: 10px;
+  }
+  .propertyPicker .options {
+    position: inherit;
+    top: auto;
+  }
+}
+
+#LearnMore .tasksArea {
+  height: 187px;
+  padding-top: 32px;
+}
+
+#LearnMore .exitTutorial {
+  margin: auto;
+  display: block;
+  width: 100px;
+  margin-top: 10px;
+}
+
+#LearnMore .startTime, #LearnMore .endTime {
+  display: inline-block;
+}
+
+#LearnMore .endTime {
+  float: right;
+}
+
+#LearnMore .pointer {
+  font-size: 12px;
+  color: #000;
+  background-color: #FFF;
+  width: 350px;
+  position: relative;
+  padding: 10px;
+  border: 1px solid #666;
+  right: 0px;
+  -webkit-box-shadow: #666 0px 0px 10px;
+  box-shadow: #666 0px 0px 10px;
+  border-radius: 3px;
+  z-index: 1050 !important;
+}
+
+#LearnMore .pointer .arrow {
+  height: 0;
+  width: 0;
+  position: absolute;
+  top: -30px;
+  left: 31px;
+  border-top-width: 15px;
+  border-right-width: 15px;
+  border-bottom-width: 15px;
+  border-left-width: 15px;
+  border-top-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: #FFFFFF;
+  border-left-color: transparent;
+  margin: 0px;
+  margin-left: 1px;
+  padding: 0px;
+}
+
+#LearnMore .pointer .arrow-border {
+  height: 0;
+  width: 0;
+  position: absolute;
+  top: -33px;
+  left: 31px;
+  border-top-width: 16px;
+  border-right-width: 16px;
+  border-bottom-width: 16px;
+  border-left-width: 16px;
+  border-top-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: #333;
+  border-left-color: transparent;
+  margin: 0px;
+  padding: 0px;
+}
+
+#LearnMore #Canvas {
+  position: relative;
+  height: 100%;
+  /* Scene 1 */
+  /* Scene 2 */
+  /* Scene 3 */
+  /* Scene 4 */
+  /* Scene 5 */
+  /* Scene 7 */
+  /* Scene 8 */
+  /* Scene 9 */
+  /* Scene 10 */
+  /* Scene 11 */
+  /* Scene 12 */
+}
+
+#LearnMore #Canvas .btn.continue {
+  display: block;
+  width: 180px;
+  margin: 10px auto auto auto;
+}
+
+#LearnMore #Canvas [data-scene] {
+  display: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#LearnMore #Canvas [data-scene="1"] .infoBox {
+  width: 420px;
+  margin: auto;
+  width: 420px;
+  position: absolute;
+  left: 50%;
+  margin-left: -220px;
+  top: 50%;
+  height: 160px;
+}
+
+#LearnMore #Canvas [data-scene="2"] .pointer {
+  top: 30px;
+}
+
+#LearnMore #Canvas [data-scene="3"] .pointer {
+  top: 18px;
+}
+
+#LearnMore #Canvas [data-scene="3"] .pointer .arrow,
+#LearnMore #Canvas [data-scene="3"] .pointer .arrow-border {
+  left: 4px;
+}
+
+#LearnMore #Canvas [data-scene="4"] .pointer {
+  top: 18px;
+  left: 790px;
+}
+
+#LearnMore #Canvas [data-scene="4"] .pointer .arrow,
+#LearnMore #Canvas [data-scene="4"] .pointer .arrow-border {
+  left: 305px;
+}
+
+#LearnMore #Canvas [data-scene="5"] .pointer {
+  bottom: 100px;
+}
+
+#LearnMore #Canvas [data-scene="7"] .pointer {
+  bottom: 100px;
+  left: 331px;
+}
+
+#LearnMore #Canvas [data-scene="8"] .pointer {
+  left: 390px;
+}
+
+#LearnMore #Canvas [data-scene="8"] .pointer .arrow,
+#LearnMore #Canvas [data-scene="8"] .pointer .arrow-border {
+  left: 154px;
+}
+
+#LearnMore #Canvas [data-scene="9"] .pointer {
+  bottom: 60px;
+  left: 406px;
+}
+
+#LearnMore #Canvas [data-scene="10"] .pointer {
+  bottom: 60px;
+  left: 615px;
+}
+
+#LearnMore #Canvas [data-scene="11"] .pointer {
+  bottom: 60px;
+  left: 300px;
+}
+
+#LearnMore #Canvas [data-scene="12"] .pointer {
+  bottom: 60px;
+  left: 732px;
+}
+/*# sourceMappingURL=styles.css.map */

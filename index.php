@@ -1,5 +1,5 @@
 <?php 
-$siteurl = "http://trakwork.local";
+$siteurl = "http://trakwork.com";
 $version = 2.5;
 ?>
 
@@ -16,7 +16,7 @@ $version = 2.5;
 		<title>My Day - Time Planner</title>
 		<!-- Bootstrap core CSS -->
 		<link href="<?php echo $siteurl; ?>/bootstrap/css/bootstrap.css" rel="stylesheet">
-		<link href="<?php echo $siteurl; ?>/styles.css" rel="stylesheet">
+		<link href="<?php echo $siteurl; ?>/css/styles.css" rel="stylesheet">
 		<!-- <link href="<?php echo $siteurl; ?>/timepicker/jquery.timepickr.css" rel="stylesheet"> --> 
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
 		<!-- Custom styles for this template -->
@@ -122,11 +122,8 @@ $version = 2.5;
 			
 			<div class="DayProgress ProgressBar"></div>
 			<div class="progress-times"></div>
-			
 			<div class="Estimates"></div>
-			
 			<div class="dayReport"></div>
-			
 		</div>
 		
 		<script>
