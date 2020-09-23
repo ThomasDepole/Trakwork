@@ -16,6 +16,9 @@ $(document).ready(function(){
 });
 
 /* Task Styles */
+function GenerateStripeColor(colorDark, colorLight){
+    return "repeating-linear-gradient(135deg, "+colorLight+", "+colorLight+" 10px, " + colorDark +" 10px, "+colorDark+" 20px)";
+}
 TaskStyles.push(new TaskStyle("orange", "#DD6100", "#FFF") );
 TaskStyles.push(new TaskStyle("lightblue", "#39B3D7", "#FFF") );
 TaskStyles.push(new TaskStyle("green", "#2CB32C", "#FFF") );
@@ -28,6 +31,19 @@ TaskStyles.push(new TaskStyle("silver", "#B6B6B6", "#FFF") );
 TaskStyles.push(new TaskStyle("crimson", "#F95252", "#FFF") );
 TaskStyles.push(new TaskStyle("black", "#000000", "#FFF") );
 TaskStyles.push(new TaskStyle("yellow", "#EDD320", "#FFF") );
+TaskStyles.push(new TaskStyle("stripe-orange", GenerateStripeColor("#DD6100", "#ff9b4d"), "#FFF", true));
+TaskStyles.push(new TaskStyle("stripe-lightblue", GenerateStripeColor("#39B3D7", "#95d6ea"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-green", GenerateStripeColor("#2CB32C", "#99e699"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-red", GenerateStripeColor("#990404", "#fc8383"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-blue", GenerateStripeColor("#0089DD", "#80cfff"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-purple", GenerateStripeColor("#8300DD", "#cb80ff"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-lightpurple", GenerateStripeColor("#B32C74", "#e699c2"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-midnightblue", GenerateStripeColor("#003366", "#80bfff"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-silver", GenerateStripeColor("#B6B6B6", "#bfbfbf"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-crimson", GenerateStripeColor("#F95252", "#fb8484"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-black", GenerateStripeColor("#000000", "#bfbfbf"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-yellow", GenerateStripeColor("#EDD320", "#f5e889"), "#FFF", true) );
+
 
 /** Time Functions **/
 Date.prototype.addMinutes = function(minutes) {
@@ -251,7 +267,7 @@ function RenderTasks(selector){
         }
 
 
-        var div = '<div class="task type-'+ t.type+'" data-task_id="'+ i +'" style="background-color: '+ color.color+' ; color: '+ color.fontcolor +' ;" ><div class="icon"><i class="fa '+ icon +'"></i></div><div class="name">'+ t.name +'</div></div>';
+        var div = '<div class="task type-'+ t.type+'" data-task_id="'+ i +'" style="background: '+ color.color+' ; color: '+ color.fontcolor +' ;" ><div class="icon"><i class="fa '+ icon +'"></i></div><div class="name">'+ t.name +'</div></div>';
         $(selector).append(div);
     }
 
@@ -317,9 +333,9 @@ function RenderDayProgress(){
 
             if(GetSetting("ProgressBarStyle") == "detailed"){
                 if(Tasks[i].link_id != null)
-                    style = 'background-color:' + Tasks[Tasks[i].link_id].color.color;
+                    style = 'background:' + Tasks[Tasks[i].link_id].color.color;
                 else
-                    style = 'background-color:' + Tasks[i].color.color;
+                    style = 'background:' + Tasks[i].color.color;
 
             }
 
@@ -603,10 +619,11 @@ function StartTask(type, name, startTime, color, icon){
 ////////////////////////////////////////
 // Task Styles
 
-function TaskStyle(name, color, fontcolor){
+function TaskStyle(name, color, fontcolor, isStriped){
     this.name = name;
     this.color = color;
     this.fontcolor = fontcolor;
+    this.isStriped = isStriped;
 }
 
 //////////////////////////////////////

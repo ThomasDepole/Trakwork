@@ -1,5 +1,6 @@
 var ColorPicker = function(elm){
     var _colorPicker = this;
+    var showStripe = false;
     elm.addClass("propertyPicker colorPicker unselectable")
 
     //add the picker html
@@ -9,7 +10,11 @@ var ColorPicker = function(elm){
     $(function(){
         // render colors
         for(var i in TaskStyles){
-            var option = $('<div class="color-option" data-colorName="'+TaskStyles[i].name+'" style="background-color: '+TaskStyles[i].color+' ;"></div>').appendTo(elm.find(".options"));
+            //only show striped colors
+            if(TaskStyles[i].isStriped == showStripe)
+                continue;
+
+            var option = $('<div class="color-option" data-colorName="'+TaskStyles[i].name+'" style="background: '+TaskStyles[i].color+' ;"></div>').appendTo(elm.find(".options"));
             $(option).click(function(){
                 var colorName = $(this).attr("data-colorName");
                 _colorPicker.setOption(colorName);
@@ -20,7 +25,7 @@ var ColorPicker = function(elm){
     this.setOption  = function(name){
         var style = $.grep(TaskStyles, function(e){ return e.name == name; })[0];
         elm.find('input[name="color"]').val(style.name)
-        elm.find('input[name="colorPreview"]').css("background-color", style.color);
+        elm.find('input[name="colorPreview"]').css("background", style.color);
     }
 
     this.showOptions = function(){
