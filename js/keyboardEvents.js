@@ -15,7 +15,6 @@ $(function(){
         if (event.keyCode >= 65 && event.keyCode <= 90) { // if a letter pressed
             if($("body").find(".keypress-capture").length > 0){
                 $("body").find(".keypress-capture").removeClass("keypress-capture").focus().val("");
-
             }
         }
     });

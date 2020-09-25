@@ -1,6 +1,6 @@
-var ColorPicker = function(elm){
+var ColorPicker = function(elm, strippedColors){
     var _colorPicker = this;
-    var showStripe = false;
+    var showStripe = (typeof strippedColors !== 'undefined') ? strippedColors : false;
     elm.addClass("propertyPicker colorPicker unselectable")
 
     //add the picker html
@@ -10,8 +10,8 @@ var ColorPicker = function(elm){
     $(function(){
         // render colors
         for(var i in TaskStyles){
-            //only show striped colors
-            if(TaskStyles[i].isStriped == showStripe)
+            //determine if we are displaying striped or non stripped colors
+            if(TaskStyles[i].isStriped != showStripe)
                 continue;
 
             var option = $('<div class="color-option" data-colorName="'+TaskStyles[i].name+'" style="background: '+TaskStyles[i].color+' ;"></div>').appendTo(elm.find(".options"));
@@ -43,10 +43,16 @@ var ColorPicker = function(elm){
     });
 }
 
-var StartTimePicker = function(elm){
+var StartTimePicker = function(elm, label, restrictDate){
+    //default
+    if(typeof label === 'undefined')
+        label = "Start Time";
+    if(typeof restrictDate === 'undefined')
+        restrictDate = true;
+
     var _startTimePicker = this;
     elm.addClass("propertyPicker startTimePicker unselectable");
-    elm.html('<div class="inputBoxLabel startTimeLabel">Start Time</div><input type="text" name="startTimeDisplay"><input type="hidden" name="startTimeValue"><div class="options"><button class="btn decrease2"><<</button><button class="btn decrease"><</button><button class="btn increase">></button><button class="btn increase2">>></button></div>');
+    elm.html('<div class="inputBoxLabel startTimeLabel">'+label+'</div><input type="text" name="startTimeDisplay"><input type="hidden" name="startTimeValue"><div class="options"><button class="btn decrease2"><<</button><button class="btn decrease"><</button><button class="btn increase">></button><button class="btn increase2">>></button></div>');
 
     this.showOptions = function(){
         elm.find(".options").show();
@@ -67,28 +73,40 @@ var StartTimePicker = function(elm){
         var now = new Date();
         elm.find('.btn').removeClass("disabled");
 
-        if(Tasks.length > 0){
-            var lastTaskStart = function() { return new Date(Tasks[Tasks.length - 1].start); }
-
-            if(date.getTime() <= lastTaskStart().getTime()){
-                date = lastTaskStart().addMinutes(1);
-                elm.find(".decrease, .decrease2").addClass("disabled");
+        if(restrictDate){
+            if(Tasks.length > 0){
+                var lastTaskStart = function() { return new Date(Tasks[Tasks.length - 1].start); }
+    
+                if(date.getTime() <= lastTaskStart().getTime()){
+                    date = lastTaskStart().addMinutes(1);
+                    elm.find(".decrease, .decrease2").addClass("disabled");
+                }
+            }
+    
+            if(date.getTime() > now.getTime()){
+                date = now;
+                elm.find(".increase, .increase2").addClass("disabled");
             }
         }
-
-        if(date.getTime() > now.getTime()){
-            date = now;
-            elm.find(".increase, .increase2").addClass("disabled");
-        }
-
-
+        
         var timeValues = getTimeValues(date , true);
         elm.find('input[name="startTimeDisplay"]').val(timeValues[0] + ":" + timeValues[1] + " " + timeValues[3]);
         elm.find('input[name="startTimeValue"]').val(date);
     }
     this.setStartTime(new Date());
 
-    var currentDate = function() {  return  elm.find('input[name="startTimeValue"]').val();  }
+    this.clearDate = function(){
+        elm.find('input[name="startTimeDisplay"]').val("none");
+        elm.find('input[name="startTimeValue"]').val("");
+    }
+
+    var currentDate = function() {  
+        var date = elm.find('input[name="startTimeValue"]').val();
+        if(date == "")
+            date = new Date();
+
+        return date;
+    }
 
     elm.find(".increase").click(function(){
         var newTime =  new Date( currentDate());

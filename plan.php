@@ -13,12 +13,19 @@
                 </div>
             </div>
         </div>
-        <script>
-            $(function(){
-                 for(var i =0; i<2; i++){
-                    $(".plannedTasks").prepend('<div class="task type-generaltask" data-task_id="0" style="background-color: #2CB32C ; color: #FFF ;"><div class="icon"><i class="fa fa-file-o"></i></div><div class="name">Task 1</div></div>');
-                 }
-            });
-        </script>
     </div>
-<?php include '../includes/footer.php'; ?>
+
+    <script>
+        for(var i =0; i<2; i++){
+            $(".plannedTasks").prepend('<div class="task type-generaltask" data-task_id="0" style="background-color: #2CB32C ; color: #FFF ;"><div class="icon"><i class="fa fa-file-o"></i></div><div class="name">Task 1</div></div>');
+        }
+
+        $(".newPlanned").click(function(){
+            CreatePlannedTask.Show();
+        });
+    </script>
+    
+<?php 
+    include 'includes/footer.php'; 
+    include 'includes/CreatePlannedTaskModal.php';
+?>

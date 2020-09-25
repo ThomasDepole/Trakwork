@@ -433,18 +433,21 @@ height: 100px;
     vertical-align: top;
 }
 
-#starttaskmodal .typeLabel + input{
-    width: 160px;
-    border: none;
-    border-bottom: 1px solid gray;
-    padding-left: 6px;
+#CreatePlannedTaskModal,
+#starttaskmodal {
+    .typeLabel + input{
+        width: 160px;
+        border: none;
+        border-bottom: 1px solid gray;
+        padding-left: 6px;
+    }
+
+    .startTimeLabel + input{
+        width: 71px;
+        cursor: pointer;
+     }
 }
 
-
-#StartTaskModal .startTimeLabel + input{
-    width: 71px;
-    cursor: pointer;
- }
 
 .Estimates{
 	margin-top: 30px;
@@ -548,19 +551,22 @@ height: 100px;
         font-size: 21px !important;
     }
 
-    #StartTaskModal .task{
-        width: 86px !important;
-        height: 73px;
-        font-size: 15px;
-    }
+    #CreatePlannedTaskModal,
+    #StartTaskModal{
+        .task{
+            width: 86px !important;
+            height: 73px;
+            font-size: 15px;
+        }
+        .type-selector {
+            text-align: center;
+        }
+    
+        .type-selector .fa {
+            font-size: 30px !important;
+        }
+    } 
 
-    #StartTaskModal .type-selector {
-        text-align: center;
-    }
-
-    #StartTaskModal .type-selector .fa {
-        font-size: 30px !important;
-    }
 
     .modal-dialog {
         padding: 0;

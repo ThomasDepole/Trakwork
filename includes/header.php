@@ -36,7 +36,7 @@
 		<script src="<?php echo $siteurl; ?>/js/myday.js?<?php echo $version; ?>"></script>
         <script src="<?php echo $siteurl; ?>/js/keypress-2.1.0.min.js"></script>
         <script src="<?php echo $siteurl; ?>/js/keyboardEvents.js?<?php echo $version; ?>"></script>
-        <script src="<?php echo $siteurl; ?>/js/propertyPicker.js?<?php echo $version; ?>"></script>
+		<script src="<?php echo $siteurl; ?>/js/propertyPicker.js?<?php echo $version; ?>"></script>
 	</head>
 <body>
 

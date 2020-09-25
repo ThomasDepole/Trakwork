@@ -137,7 +137,6 @@ var TaskPicker = new function(){
     }
 }
 
-
 TaskPicker.elm.on('hidden.bs.modal', function () {
     TaskPicker.elm.find(".go").removeClass("keypress-enter");
 });
@@ -182,7 +181,3 @@ $(".endDay-no").click(function(){
     $(".type-selector").show();
     $(".endDay-conform").hide();
 });
-
-
-
-

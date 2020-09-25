@@ -19,6 +19,7 @@ $(document).ready(function(){
 function GenerateStripeColor(colorDark, colorLight){
     return "repeating-linear-gradient(135deg, "+colorLight+", "+colorLight+" 10px, " + colorDark +" 10px, "+colorDark+" 20px)";
 }
+//solid colors
 TaskStyles.push(new TaskStyle("orange", "#DD6100", "#FFF") );
 TaskStyles.push(new TaskStyle("lightblue", "#39B3D7", "#FFF") );
 TaskStyles.push(new TaskStyle("green", "#2CB32C", "#FFF") );
@@ -31,19 +32,19 @@ TaskStyles.push(new TaskStyle("silver", "#B6B6B6", "#FFF") );
 TaskStyles.push(new TaskStyle("crimson", "#F95252", "#FFF") );
 TaskStyles.push(new TaskStyle("black", "#000000", "#FFF") );
 TaskStyles.push(new TaskStyle("yellow", "#EDD320", "#FFF") );
-TaskStyles.push(new TaskStyle("stripe-orange", GenerateStripeColor("#DD6100", "#ff9b4d"), "#FFF", true));
-TaskStyles.push(new TaskStyle("stripe-lightblue", GenerateStripeColor("#39B3D7", "#95d6ea"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-green", GenerateStripeColor("#2CB32C", "#99e699"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-red", GenerateStripeColor("#990404", "#fc8383"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-blue", GenerateStripeColor("#0089DD", "#80cfff"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-purple", GenerateStripeColor("#8300DD", "#cb80ff"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-lightpurple", GenerateStripeColor("#B32C74", "#e699c2"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-midnightblue", GenerateStripeColor("#003366", "#80bfff"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-silver", GenerateStripeColor("#B6B6B6", "#bfbfbf"), "#FFF", true) );
+//striped 
+TaskStyles.push(new TaskStyle("stripe-orange", GenerateStripeColor("#DD6100", "#ff7e1a"), "#FFF", true));
+TaskStyles.push(new TaskStyle("stripe-lightblue", GenerateStripeColor("#39B3D7", "#78cbe3"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-green", GenerateStripeColor("#2CB32C", "#58d658"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-red", GenerateStripeColor("#990404", "#fa3434"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-blue", GenerateStripeColor("#0089DD", "#2eb0ff"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-purple", GenerateStripeColor("#8300DD", "#aa2eff"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-lightpurple", GenerateStripeColor("#B32C74", "#d6589b"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-midnightblue", GenerateStripeColor("#003366", "#0068d1"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-silver", GenerateStripeColor("#B6B6B6", "#c5c5c5"), "#FFF", true) );
 TaskStyles.push(new TaskStyle("stripe-crimson", GenerateStripeColor("#F95252", "#fb8484"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-black", GenerateStripeColor("#000000", "#bfbfbf"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-yellow", GenerateStripeColor("#EDD320", "#f5e889"), "#FFF", true) );
-
+TaskStyles.push(new TaskStyle("stripe-black", GenerateStripeColor("#000000", "#515151"), "#FFF", true) );
+TaskStyles.push(new TaskStyle("stripe-yellow", GenerateStripeColor("#c1ab10", "#6b5f09"), "#FFF", true) );
 
 /** Time Functions **/
 Date.prototype.addMinutes = function(minutes) {
@@ -623,7 +624,7 @@ function TaskStyle(name, color, fontcolor, isStriped){
     this.name = name;
     this.color = color;
     this.fontcolor = fontcolor;
-    this.isStriped = isStriped;
+    this.isStriped = (typeof isStriped !== 'undefined') ? isStriped : false;
 }
 
 //////////////////////////////////////

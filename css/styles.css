@@ -428,6 +428,7 @@ label {
   vertical-align: top;
 }
 
+#CreatePlannedTaskModal .typeLabel + input,
 #starttaskmodal .typeLabel + input {
   width: 160px;
   border: none;
@@ -435,7 +436,8 @@ label {
   padding-left: 6px;
 }
 
-#StartTaskModal .startTimeLabel + input {
+#CreatePlannedTaskModal .startTimeLabel + input,
+#starttaskmodal .startTimeLabel + input {
   width: 71px;
   cursor: pointer;
 }
@@ -538,14 +540,17 @@ label {
   i.fa {
     font-size: 21px !important;
   }
+  #CreatePlannedTaskModal .task,
   #StartTaskModal .task {
     width: 86px !important;
     height: 73px;
     font-size: 15px;
   }
+  #CreatePlannedTaskModal .type-selector,
   #StartTaskModal .type-selector {
     text-align: center;
   }
+  #CreatePlannedTaskModal .type-selector .fa,
   #StartTaskModal .type-selector .fa {
     font-size: 30px !important;
   }
