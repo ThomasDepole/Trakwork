@@ -10,6 +10,7 @@
         <div class="day">
             <div class="dayLabel"></div>
             <div class="plannedTasks"></div>
+            <div class="msg"></div>
             <div class="ProgressBar"></div>
         </div>
     </div>

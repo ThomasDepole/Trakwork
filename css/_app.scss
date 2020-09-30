@@ -175,6 +175,7 @@ label {
         display: inline-block;
         background-color: #E0E0E0;
         float: left;
+        cursor: pointer;
     }
     div:hover {
         border-right: 1px solid #B4AEAE;
@@ -224,6 +225,7 @@ label {
 	border-radius: 4px;
 	text-align: center;
     vertical-align: top;
+    cursor: pointer;
 }
 
 .task.blur,
@@ -389,9 +391,13 @@ height: 100px;
     margin: 2px;
 }
 
+.colorPicker .inputBoxLabel {
+    width: 56px;
+}
+
 .propertyPicker.startTimePicker .options{
     height: 40px;
-    width: 152px;
+    width: 138px;
 }
 
 .propertyPicker.estimatePicker .options .btn,
@@ -429,7 +435,7 @@ height: 100px;
 }
 
 .estimatePicker .options {
-    width: 133px;
+    width: 132px;
     height: 40px;
     vertical-align: top;
 }

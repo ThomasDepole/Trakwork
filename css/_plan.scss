@@ -49,6 +49,16 @@
             }
     
         }
+
+        .msg {
+            text-align: center;
+            position: relative;
+            top: 10px;
+
+            .error{
+                color: darkred;
+            }
+        }
     
         .ProgressBar{
             margin-top: 21px;

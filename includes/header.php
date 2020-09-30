@@ -12,7 +12,9 @@
         <link href='http://fonts.googleapis.com/css?family=Questrial' rel='stylesheet' type='text/css'>
         <meta name="description" content="">
 		<meta name="author" content="">
-		<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+		<!--
+			<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+		-->
 		<title>Trakwork</title>
 		<!-- Bootstrap core CSS -->
 		<link href="<?php echo $siteurl; ?>/bootstrap/css/bootstrap.css" rel="stylesheet">

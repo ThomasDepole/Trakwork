@@ -70,6 +70,11 @@ var StartTimePicker = function(elm, label, restrictDate){
 
     //The start time logic
     this.setStartTime = function(date){
+        if(date == "")
+            date = new Date();
+        if(typeof date === "string")
+            date = new Date(date);
+
         var now = new Date();
         elm.find('.btn').removeClass("disabled");
 
@@ -108,27 +113,40 @@ var StartTimePicker = function(elm, label, restrictDate){
         return date;
     }
 
+
+
+    this.increment = function(direction){
+        var newTime = new Date(currentDate());
+
+        if(direction == "+")
+           newTime = newTime.addMinutes(1);
+        if(direction == "++")
+            newTime = newTime.addMinutes(30);
+        if(direction == "-")
+            newTime = newTime.subtrackMinutes(1);
+        if(direction == "--")
+            newTime = newTime.subtrackMinutes(30);
+
+        _startTimePicker.setStartTime(newTime);
+    }
+
     elm.find(".increase").click(function(){
-        var newTime =  new Date( currentDate());
-        _startTimePicker.setStartTime(newTime.addMinutes(1));
+        _startTimePicker.increment("+");
     });
     elm.find(".increase2").click(function(){
-        var newTime =  new Date( currentDate());
-        _startTimePicker.setStartTime(newTime.addMinutes(30));
+        _startTimePicker.increment("++");
     });
 
     elm.find(".decrease").click(function(){
-        var newTime =  new Date( currentDate());
-        _startTimePicker.setStartTime(newTime.subtrackMinutes(1));
+        _startTimePicker.increment("-");
     });
 
     elm.find(".decrease2").click(function(){
-        var newTime =  new Date( currentDate());
-        _startTimePicker.setStartTime(newTime.subtrackMinutes(30));
+        _startTimePicker.increment("--");
     });
 }
 
-var EstimatePicker = function(elm){
+var EstimatePicker = function(elm, minValueInHours){
     var _estimatePicker = this;
     elm.addClass("propertyPicker estimatePicker unselectable");
     elm.html('<div class="inputBoxLabel estimatelabel">Estimate</div><input type="text" name="estimateDisplay"/><div class="options"><button class="btn decrease2"><<</button><button class="btn decrease"><</button><button class="btn increase">></button><button class="btn increase2">>></button></div>');
@@ -137,6 +155,9 @@ var EstimatePicker = function(elm){
     this.setEstimate = function(value){
         if(value < 0)
             value = 0;
+
+        if(typeof minValueInHours === "number" && value < minValueInHours)
+            value = minValueInHours;
 
         this.estimate = value;
 
@@ -155,7 +176,10 @@ var EstimatePicker = function(elm){
     }
 
     this.Reset = function(){
-        this.setEstimate(0);
+        if(typeof minValueInHours === "number")
+            this.setEstimate(minValueInHours);
+        else
+            this.setEstimate(0);
     }
 
     this.GetValue = function(){
@@ -167,19 +191,30 @@ var EstimatePicker = function(elm){
         _estimatePicker.showOptions();
     });
 
+    this.increment = function(direction){
+        if(direction == "+")
+            _estimatePicker.setEstimate(_estimatePicker.estimate + .25);
+        if(direction == "++")
+            _estimatePicker.setEstimate(_estimatePicker.estimate + .50);
+        if(direction == "-")
+            _estimatePicker.setEstimate(_estimatePicker.estimate - .25);
+        if(direction == "--")
+            _estimatePicker.setEstimate(_estimatePicker.estimate - .50);
+    }
+
     elm.find(".increase").click(function(){
-        _estimatePicker.setEstimate(_estimatePicker.estimate + .25);
+        _estimatePicker.increment("+");
     });
     elm.find(".increase2").click(function(){
-        _estimatePicker.setEstimate((_estimatePicker.estimate + .50));
+        _estimatePicker.increment("++");
     });
 
     elm.find(".decrease").click(function(){
-        _estimatePicker.setEstimate((_estimatePicker.estimate - .25));
+        _estimatePicker.increment("-");
     });
 
     elm.find(".decrease2").click(function(){
-        _estimatePicker.setEstimate((_estimatePicker.estimate -.50));
+        _estimatePicker.increment("--");
     });
 }
 

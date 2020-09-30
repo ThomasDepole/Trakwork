@@ -11,6 +11,7 @@ var icons; //loaded in index TODO find a better way to load these
 
 $(document).ready(function(){
     LoadTasks();
+    LoadPlannedTasks();
     LoadSettings();
     LoadEstimates();
     RenderEstimates();
@@ -21,9 +22,9 @@ function GenerateStripeColor(colorDark, colorLight){
     return "repeating-linear-gradient(135deg, "+colorLight+", "+colorLight+" 10px, " + colorDark +" 10px, "+colorDark+" 20px)";
 }
 //solid colors
+TaskStyles.push(new TaskStyle("green", "#2CB32C", "#FFF") );
 TaskStyles.push(new TaskStyle("orange", "#DD6100", "#FFF") );
 TaskStyles.push(new TaskStyle("lightblue", "#39B3D7", "#FFF") );
-TaskStyles.push(new TaskStyle("green", "#2CB32C", "#FFF") );
 TaskStyles.push(new TaskStyle("red", "#990404", "#FFF") );
 TaskStyles.push(new TaskStyle("blue", "#0089DD", "#FFF") );
 TaskStyles.push(new TaskStyle("purple", "#8300DD", "#FFF") );
@@ -34,9 +35,9 @@ TaskStyles.push(new TaskStyle("crimson", "#F95252", "#FFF") );
 TaskStyles.push(new TaskStyle("black", "#000000", "#FFF") );
 TaskStyles.push(new TaskStyle("yellow", "#EDD320", "#FFF") );
 //striped 
+TaskStyles.push(new TaskStyle("stripe-green", GenerateStripeColor("#2CB32C", "#58d658"), "#FFF", true) );
 TaskStyles.push(new TaskStyle("stripe-orange", GenerateStripeColor("#DD6100", "#ff7e1a"), "#FFF", true));
 TaskStyles.push(new TaskStyle("stripe-lightblue", GenerateStripeColor("#39B3D7", "#78cbe3"), "#FFF", true) );
-TaskStyles.push(new TaskStyle("stripe-green", GenerateStripeColor("#2CB32C", "#58d658"), "#FFF", true) );
 TaskStyles.push(new TaskStyle("stripe-red", GenerateStripeColor("#990404", "#fa3434"), "#FFF", true) );
 TaskStyles.push(new TaskStyle("stripe-blue", GenerateStripeColor("#0089DD", "#2eb0ff"), "#FFF", true) );
 TaskStyles.push(new TaskStyle("stripe-purple", GenerateStripeColor("#8300DD", "#aa2eff"), "#FFF", true) );
@@ -244,10 +245,21 @@ function SaveTasks(){
 
 //Planned Tasks
 function LoadPlannedTasks(){
+    var taskModels = $.parseJSON(localStorage.getItem("plans"));
+    if(taskModels == null)
+        return;
     
+    taskModels.forEach(taskModel => {
+        var task = new PlannedTask();
+        Object.assign(task, taskModel);
+        task.date = new Date(task.date);
+        if(task.deadline != "")
+            task.deadline = new Date(task.deadline);
+        PlannedTasks.push(task);
+    });
 }
 function SavePlannedTasks(){
-    localStorage.setItem("plans", JSON.stringify(PlannedTask));
+    localStorage.setItem("plans", JSON.stringify(PlannedTasks));
 }
 
 //Estimates
@@ -462,7 +474,7 @@ function RenderEstimates(){
 
     //If esitamtes exists, render progress bars
     if(Estimates.length > 0){
-        $(RenderArea).append("<h4> Goals </h4>");
+        $(RenderArea).append("<h4> Estimates </h4>");
 
         for(var i in Estimates){
             var est = Estimates;
@@ -626,6 +638,7 @@ var PlannedTask = function(){
     this.icon;
     this.notes;
     this.priority;
+    this.deadline;
     this.date;
     this.estimate;
 
@@ -672,9 +685,17 @@ function CreatePlannedTask(name, color, icon, notes, deadline, date, estimate, p
 
     PlannedTasks.push(plan);
 
-    SaveTasks();
+    SavePlannedTasks();
 
     return plan;
+}
+
+function UpdatePlannedTask(task){
+    for(var i = 0; i < PlannedTasks.length; i++){
+        if(PlannedTasks[i].id == task.id)
+            PlannedTasks[i] = task;
+    }
+    SavePlannedTasks();
 }
 
 /////////////////////////////
@@ -782,6 +803,14 @@ var TimeCalc = new function TimeCalculator(){
         var hours = Math.floor(totalMins / 60);  
         var minutes = totalMins % 60;
         return hours + "h " + minutes + "m";     
+    }
+
+    this.DatesAreOnSameDay = function(first, second){
+        return (
+                first.getFullYear() === second.getFullYear() &&
+                first.getMonth() === second.getMonth() &&
+                first.getDate() === second.getDate()
+            );
     }
 }
 
