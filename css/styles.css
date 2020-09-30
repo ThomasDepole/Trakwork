@@ -168,6 +168,7 @@ label {
   position: relative;
 }
 
+.ProgressBar [data-id],
 .ProgressBar [data-task_id] {
   height: 100%;
   display: inline-block;
@@ -812,18 +813,21 @@ label {
   margin-top: 24px;
 }
 
-#Planner .dayLabel {
+#Planner .day {
+  margin-bottom: 90px;
+}
+
+#Planner .day .dayLabel {
   text-align: center;
-  border-top: 1px solid #8a8a8a;
   width: 107px;
   margin: auto;
 }
 
-#Planner .plannedTasks {
+#Planner .day .plannedTasks {
   margin-top: 5px;
 }
 
-#Planner .plannedTasks .addTask {
+#Planner .day .plannedTasks .addTask {
   background: #f5f5f5;
   text-align: center;
   border-radius: 5px;
@@ -836,11 +840,18 @@ label {
   color: #616161;
 }
 
-#Planner .ProgressBar {
+#Planner .day .ProgressBar {
   margin-top: 21px;
 }
 
-#Planner .ProgressBar .TimeRemaining {
+#Planner .day .ProgressBar .TimeRemaining {
   color: gray;
+}
+
+#CreatePlannedTaskModal #notes {
+  width: 100%;
+  height: 120px;
+  margin: 10px 0 0 0;
+  padding: 5px 10px;
 }
 /*# sourceMappingURL=styles.css.map */

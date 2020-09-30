@@ -10,6 +10,11 @@
 			<div class="modal-body">
 				<div class="type-options">
                     <span class="typelabel"> Name </span>  <input type="text" name="name" value="" />
+
+					<br />
+
+					<textarea name="notes" id="notes" placeholder="notes"></textarea>
+
                     <br  />
                     <br  />
 
@@ -21,14 +26,6 @@
                     <input type="hidden" name="resumeTaskID">
                     <input type="hidden" name="tasktype">
 
-				</div>
-				
-				<div class="resumetasks-chooser"></div>
-				<div class="endDay-conform" style="display: none;">
-					Are you sure you want to end?
-					<br />
-					<div class="btn btn-default endDay-confirm">Yes</div>
-					<div class="btn btn-default endDay-no">No</div>
 				</div>
 					
 			</div>

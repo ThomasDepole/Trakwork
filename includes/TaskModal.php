@@ -9,13 +9,10 @@
 				<h4 class="modal-title" id="myModalLabel"></h4>
 			</div>
 			<div class="modal-body">
-				<div style="float:right"> Task Type <select name="tasktype" id="tasktype" ></select>  </div>
+				<div class="taskTypeContainer" style="float:right"> Task Type <select name="tasktype" id="tasktype" ></select>  </div>
 				
 				Notes <br />
 				<textarea name="notes" id="notes"></textarea>
-
-
-
 				<div class="starttime"></div>
 				<div class="endtime"></div>
 				<div class="timespent"></div>
@@ -88,7 +85,7 @@
         }
 
         this.Show = function(task){
-            this.colorPicker.setOption(task.color.name);
+            this.colorPicker.setOption(task.GetColor().name);
             this.elm.find(".saveTask").addClass("keypress-enter")
             this.iconPicker.SelectIcon(task.icon);
             this.elm.modal();
@@ -104,6 +101,7 @@
     $(function(){
         $(".tasks .task").click(function(){  }) ;
     });
+
     $("body").delegate("#TaskModal .saveTask", "click", function(){
         var id = $("#TaskModal #taskid").val();
         Tasks[id].notes = $("#TaskModal #notes").val();
@@ -111,9 +109,7 @@
         Tasks[id].type = $('#TaskModal #tasktype').val();
         Tasks[id].type = $('#TaskModal #tasktype').val();
         Tasks[id].icon = $('#TaskModal input[name="icon"]').val();
-
-        var color = $.grep(TaskStyles, function(e){ return e.name == $('#TaskModal input[name="color"]').val(); })[0];
-        Tasks[id].color = color;
+        Tasks[id].color = $('#TaskModal input[name="color"]').val();
 
         SetEstimate(id, TaskDetails.estimate.GetValue());
 

@@ -3,6 +3,7 @@ var MainClock = ".MainClock";
 var Tasks = new Array();
 var Settings = new Array();
 var TaskStyles = new Array();
+var PlannedTasks = new Array();
 var DayProgressMax = 480;
 var DefaultDayLength = 480;
 var icons; //loaded in index TODO find a better way to load these
@@ -172,6 +173,16 @@ function gethours(id){
     return GetDifferenceInHours(laterdate, earlierdate);
 }
 
+/**  Util functions **/
+function guid()
+{
+    function s4()
+    {
+        return Math.floor(Math.random() * 65536).toString(16).padStart(4, '0')
+    } // End Function s4 
+
+    return s4() + s4() + '-' + s4() + '-' + "4" + s4().substr(1) + '-' + s4() + '-' + s4() + s4() + s4();
+} // End Function guid 
 
 /** Saving and Loading **/
 //Settings
@@ -192,6 +203,7 @@ function LoadSettings(){
 function SaveSettings(){
     localStorage.setItem("settings", JSON.stringify(Settings));
 }
+
 //Tasks
 function LoadTasks(){
     temp = $.parseJSON(localStorage.getItem("tasks"));
@@ -221,7 +233,6 @@ function LoadTasks(){
     RenderTasks(".Tasks");
     RenderDayProgress();
 }
-
 function SaveTasks(){
     console.log("saved" + Tasks);
     for(var i = 0; Tasks.length > i; i++){
@@ -230,13 +241,15 @@ function SaveTasks(){
     }
     localStorage.setItem("tasks", JSON.stringify(Tasks));
 }
-//Styles
-function LoadTaskStyles(){
-   console.error("Remove load task styles reference");
+
+//Planned Tasks
+function LoadPlannedTasks(){
+    
 }
-function SaveTaskStyles(){
-    localStorage.setItem("taskstyles", JSON.stringify(TaskStyles));
+function SavePlannedTasks(){
+    localStorage.setItem("plans", JSON.stringify(PlannedTask));
 }
+
 //Estimates
 function SaveEstimates(){
     localStorage.setItem("estimates", JSON.stringify(Estimates));
@@ -268,7 +281,7 @@ function RenderTasks(selector){
         }
 
 
-        var div = '<div class="task type-'+ t.type+'" data-task_id="'+ i +'" style="background: '+ color.color+' ; color: '+ color.fontcolor +' ;" ><div class="icon"><i class="fa '+ icon +'"></i></div><div class="name">'+ t.name +'</div></div>';
+        var div = '<div class="task type-'+ t.type+'" data-task_id="'+ i +'" style="background: '+ t.GetColor().color +' ; color: '+ t.GetColor().fontcolor +' ;" ><div class="icon"><i class="fa '+ icon +'"></i></div><div class="name">'+ t.name +'</div></div>';
         $(selector).append(div);
     }
 
@@ -285,8 +298,11 @@ function RenderDayProgress(){
         var maxhour = parseInt(GetSetting("DayLength"));
 
         for(var i in Tasks){
-            if(Tasks[i].end != null)  laterdate = new Date(Tasks[i].end);
-            else  laterdate = new Date();
+            if(Tasks[i].end != null)  
+                laterdate = new Date(Tasks[i].end);
+            else  
+                laterdate = new Date();
+
             earlierdate = new Date(Tasks[i].start);
             if(Tasks[i].type == "lunch" || Tasks[i].type == "nonbillable"){
                 //adds time to day because this task doesn't count against work
@@ -334,9 +350,9 @@ function RenderDayProgress(){
 
             if(GetSetting("ProgressBarStyle") == "detailed"){
                 if(Tasks[i].link_id != null)
-                    style = 'background:' + Tasks[Tasks[i].link_id].color.color;
+                    style = 'background:' + Tasks[Tasks[i].link_id].GetColor().color;
                 else
-                    style = 'background:' + Tasks[i].color.color;
+                    style = 'background:' + Tasks[i].GetColor().color;
 
             }
 
@@ -556,8 +572,9 @@ function GetSetting(key){
 
 
 //////////////////////////////////
-// Task Object and functions
+// Models and functions
 function Task(type, name, link_id, start_time, color, icon){
+    var self = this;
     this.type = type;
     this.name = name;
     this.start = start_time;
@@ -595,6 +612,26 @@ function Task(type, name, link_id, start_time, color, icon){
         else
             return new Date(); //current task
     }
+
+    this.GetColor = function(){
+        return $.grep(TaskStyles, function(e){ return e.name == self.color })[0];
+    }
+}
+
+var PlannedTask = function(){
+    var self = this;
+    this.id;
+    this.name;
+    this.color;
+    this.icon;
+    this.notes;
+    this.priority;
+    this.date;
+    this.estimate;
+
+    this.GetColor = function(){
+        return $.grep(TaskStyles, function(e){ return e.name == self.color })[0];
+    }
 }
 
 
@@ -612,7 +649,32 @@ function StartTask(type, name, startTime, color, icon){
 
     var id = Tasks.push( new Task(type, name, null, startTime, color, icon));
     id = id - 1;
+
+    RenderTasks(".tasks");
+    RenderDayProgress();
+    SaveTasks();
+    SaveEstimates();
+
     return id
+}
+
+function CreatePlannedTask(name, color, icon, notes, deadline, date, estimate, priority){
+    var plan = new PlannedTask();
+    plan.id = guid();
+    plan.name = name;
+    plan.color = color;
+    plan.icon = icon;
+    plan.notes = notes;
+    plan.deadline = deadline;
+    plan.priority = priority;
+    plan.date = date;
+    plan.estimate = estimate;
+
+    PlannedTasks.push(plan);
+
+    SaveTasks();
+
+    return plan;
 }
 
 /////////////////////////////
@@ -714,6 +776,12 @@ var TimeCalc = new function TimeCalculator(){
         earlierdate = new Date(endDate);
 
         return earlierdate.getTime() - laterdate.getTime();
+    }
+
+    this.TimeLabel_FromMins = function(totalMins){
+        var hours = Math.floor(totalMins / 60);  
+        var minutes = totalMins % 60;
+        return hours + "h " + minutes + "m";     
     }
 }
 

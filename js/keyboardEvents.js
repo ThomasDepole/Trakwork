@@ -1,12 +1,12 @@
 var keyboard;
 $(function(){
-     keyboard = new window.keypress.Listener();
+    keyboard = new window.keypress.Listener();
 
     keyboard.simple_combo("enter", function(){
-       if($("body").find(".keypress-enter").length > 0){
-           $("body").find(".keypress-enter").trigger("click");
-           return;
-       }
+        if($("body").find(".keypress-enter").length > 0){
+            $("body").find(".keypress-enter").trigger("click");
+            return;
+        }
 
         TaskPicker.SelectType("generaltask");
     });
@@ -19,5 +19,3 @@ $(function(){
         }
     });
 });
-
-

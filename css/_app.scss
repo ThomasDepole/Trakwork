@@ -169,6 +169,7 @@ label {
     overflow: hidden;
     position: relative;
     
+    [data-id],
     [data-task_id] {
         height: 100%;
         display: inline-block;

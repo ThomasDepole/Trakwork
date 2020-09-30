@@ -1,8 +1,9 @@
-var CreatePlannedTask = new function(){
+var CreatePlannedTaskModal = new function(){
     var self = this;
     this.elm = $("#CreatePlannedTaskModal");
     this.target = this.elm[0];
     this.isOpen = false;
+    this.day = null;
 
     //Create the pickers
     this.colorPicker = new ColorPicker( self.elm.find(".colorPicker"), true );
@@ -18,28 +19,18 @@ var CreatePlannedTask = new function(){
     this.CreateTask = function(){
         var type = this.elm.find('.type-options input[name="tasktype"]').val();
         var name = this.elm.find('input[name=name]').val();
-        var colorKey = this.elm.find('input[name="color"]').val();
-        var color = $.grep(TaskStyles, function(e){ return e.name == colorKey })[0];
-        var resumeID = this.elm.find('input[name="resumeTaskID"]').val();
+        var color = this.elm.find('input[name="color"]').val();
         var icon = this.elm.find('input[name="icon"]').val();
+        var notes = this.elm.find('[name="notes"]').val();
+        var deadline = this.elm.find("input[name=startTimeValue]").val();
+        var estimate = this.estimate.GetValue();
+        var date = new Date();
 
-        var id = StartTask(type, name, $('#StartTaskModal input[name="startTimeValue"]').val(), color, icon);
+        var plan = CreatePlannedTask(name,color,icon,notes,deadline,date,estimate,false);
 
-        SetEstimate(id, this.estimate.GetValue());
-
-        if (resumeID != "")
-            Tasks[id].link_id = resumeID;
-
-        $(".task.new .name").html("Change Task");
-        $(".task.new").show();
-        $(".startday").hide();
-
-        RenderTasks(".tasks");
-        RenderDayProgress();
-        SaveTasks();
-        SaveEstimates();
         this.Hide();
-        return id;
+        self.day.render();
+        return plan.id;
     }
 
     this.Reset = function(){
@@ -55,24 +46,27 @@ var CreatePlannedTask = new function(){
         this.elm.modal("hide");
     }
 
-    this.Show = function(){
+    this.Show = function(dayPlanner){
+        self.day = dayPlanner;
         self.Reset();
         self.elm.find('input[name="name"]').addClass("keypress-capture").val("Task");
         if(!self.isOpen)
             self.elm.modal();
     }
+
+    //focus events
+    self.elm.on('shown.bs.modal', function () {
+        CreatePlannedTaskModal.isOpen = true;
+        CreatePlannedTaskModal.elm.find(".go").addClass("keypress-enter");
+    });
+
+    //blur events
+    self.elm.on('hidden.bs.modal', function () {
+        CreatePlannedTaskModal.isOpen = false;
+        CreatePlannedTaskModal.elm.find(".go").removeClass("keypress-enter");
+    });
 }
 
-CreatePlannedTask.elm.on('hidden.bs.modal', function () {
-    CreatePlannedTask.isOpen = false;
-    CreatePlannedTask.elm.find(".go").removeClass("keypress-enter");
-});
-
-CreatePlannedTask.elm.on('shown.bs.modal', function () {
-    CreatePlannedTask.isOpen = true;
-    CreatePlannedTask.elm.find(".go").addClass("keypress-enter");
-});
-
-$("#StartTaskModal .go").click(function(){
-    CreatePlannedTask.CreateTask();
+$("#CreatePlannedTaskModal .go").click(function(){
+    CreatePlannedTaskModal.CreateTask();
 });

@@ -73,8 +73,7 @@ var TaskPicker = new function(){
     this.StartTask = function(){
         var type = this.elm.find('.type-options input[name="tasktype"]').val();
         var name = this.elm.find('input[name=name]').val();
-        var colorKey = this.elm.find('input[name="color"]').val();
-        var color = $.grep(TaskStyles, function(e){ return e.name == colorKey })[0];
+        var color = this.elm.find('input[name="color"]').val();
         var resumeID = this.elm.find('input[name="resumeTaskID"]').val();
         var icon = this.elm.find('input[name="icon"]').val();
 
