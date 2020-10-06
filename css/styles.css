@@ -168,6 +168,13 @@ label {
   position: relative;
 }
 
+.ProgressBar .plannedTaskTime {
+  background-image: linear-gradient(45deg, #b3b3b3 6.52%, #ededed 6.52%, #ededed 50%, #b3b3b3 50%, #b3b3b3 56.52%, #ededed 56.52%, #ededed 100%);
+  background-size: 32.53px 32.53px;
+  opacity: .15;
+}
+
+.ProgressBar .plannedTaskTime,
 .ProgressBar [data-id],
 .ProgressBar [data-task_id] {
   height: 100%;
@@ -792,22 +799,28 @@ label {
   left: 732px;
 }
 
+body.droppable {
+  background: #00000047;
+}
+
 .MiniNav {
   text-align: center;
   position: absolute;
-  top: 8px;
+  top: 3px;
   left: 50%;
   width: 100px;
   margin-left: -50px;
 }
 
 .MiniNav .divider {
-  font-size: 24px;
+  font-size: 14px;
   color: #c3c3c3;
+  position: relative;
+  top: -1px;
 }
 
 .MiniNav a {
-  color: #383838;
+  color: #868686;
   font-size: 17px;
 }
 
@@ -821,6 +834,15 @@ label {
 
 #Planner .day {
   margin-bottom: 90px;
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  padding: 20px 10px 33px 10px;
+}
+
+#Planner .day.droppable {
+  -webkit-box-shadow: 0px 0px 21px 0px #5e5e5e;
+  box-shadow: 0px 0px 21px 0px #5e5e5e;
 }
 
 #Planner .day .dayLabel {
@@ -869,5 +891,29 @@ label {
   height: 120px;
   margin: 10px 0 0 0;
   padding: 5px 10px;
+}
+
+#PlannedTaskPicker {
+  margin: auto;
+  width: 527px;
+}
+
+#PlannedTaskPicker h1 {
+  color: white;
+  font-size: 19px;
+}
+
+.task.dropRegion {
+  visibility: hidden;
+  background: #c5c5c5;
+  border: 2px solid #616161;
+  -webkit-box-shadow: inset 0px 0px 14px 5px #636363;
+  box-shadow: inset 0px 0px 14px 5px #636363;
+}
+
+.task.dropRegion .dropLabel {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 36px;
 }
 /*# sourceMappingURL=styles.css.map */

@@ -20,14 +20,14 @@ var CreatePlannedTaskModal = new function(){
     });
 
     this.SaveTask = function(){
-        var name = this.elm.find('input[name=name]').val();
-        var color = this.elm.find('input[name="color"]').val();
-        var icon = this.elm.find('input[name="icon"]').val();
-        var notes = this.elm.find('[name="notes"]').val();
-        var deadline = this.elm.find("input[name=startTimeValue]").val();
+        var name = self.elm.find('input[name=name]').val();
+        var color = self.elm.find('input[name="color"]').val();
+        var icon = self.elm.find('input[name="icon"]').val();
+        var notes = self.elm.find('[name="notes"]').val();
+        var deadline = self.elm.find("input[name=startTimeValue]").val();
         if(deadline != "")
             deadline = new Date(deadline);
-        var estimate = this.estimate.GetValue();
+        var estimate = self.estimate.GetValue();
         var date = self.day.date;
 
         if(self.task != null){
@@ -43,7 +43,7 @@ var CreatePlannedTaskModal = new function(){
             CreatePlannedTask(name,color,icon,notes,deadline,date,estimate,false);
         }
 
-        this.Hide();
+        self.Hide();
         self.day.render();
         self.task = null;
     }
@@ -93,6 +93,14 @@ var CreatePlannedTaskModal = new function(){
         self.estimate.GetValue();
     }
 
+    this.DeleteTask = function(){
+        if(self.task != null)
+            DeletePlannedTask(self.task.id);
+
+        for(var i=0; i<AllPlanners.length; i++)
+            AllPlanners[i].render();
+    }
+
     //focus events
     self.elm.on('shown.bs.modal', function () {
         CreatePlannedTaskModal.isOpen = true;
@@ -104,84 +112,13 @@ var CreatePlannedTaskModal = new function(){
     });
 
     //keyboard events
-    var colorIndex = 0;
-    $(this.elm).keydown(function(e){
-        //handle enter key
-        if(e.key == "Enter"){
-            self.SaveTask();
-            return;
-        }
-
-        //handle free form typing
-        if(e.keyCode >= 48 && e.keyCode <= 90){
-            if(!self.notesField.is(":focus") && self.nameField.hasClass("has-default-value"))
-                self.elm.find("[name=name]").val("").focus().removeClass("has-default-value");
-            return;
-        }
-
-        //tab to exit notes field
-        if(e.key == "Tab" && self.notesField.is(":focus")){
-            self.notesField.blur();
-            e.preventDefault();
-            self.elm.focus();
-            return;
-        }
-
-        //ignore arrow keys if the notes field or name field is in focus
-        if(self.notesField.is(":focus") || self.nameField.is(":focus"))
-            return;
-        
-        //deadline actions
-        if(e.key == "ArrowLeft" && !e.shiftKey && !e.altKey)
-            self.startTimePicker.increment("--");
-        if(e.key == "ArrowLeft" && e.shiftKey && !e.altKey)
-                self.startTimePicker.increment("-");
-
-        if(e.key == "ArrowRight" && !e.shiftKey && !e.altKey)
-            self.startTimePicker.increment("++");
-
-        if(e.key == "ArrowRight" && e.shiftKey && !e.altKey)
-            self.startTimePicker.increment("+");
-
-        //estimate actions
-        if(e.key == "ArrowDown" && !e.shiftKey && !e.altKey)
-            self.estimate.increment("-");
-
-        if(e.key == "ArrowDown" && e.shiftKey && !e.altKey)
-            self.estimate.increment("--");
-
-        if(e.key == "ArrowUp" && !e.shiftKey && !e.altKey)
-            self.estimate.increment("+");
-
-        if(e.key == "ArrowUp" && e.shiftKey && !e.altKey)
-            self.estimate.increment("++");
-            
-        //colors
-        if(e.key == "ArrowLeft" && e.altKey)
-        {
-            if(colorIndex == 0)
-                colorIndex = self.elm.find(".colorPicker .color-option").length;
-            
-            colorIndex--;
-            var color = $(self.elm.find(".colorPicker .color-option")[colorIndex]).attr("data-colorname");
-            self.colorPicker.setOption(color);
-            e.preventDefault();
-            self.elm.focus();
-        }
-        if(e.key == "ArrowRight" && e.altKey)
-        {
-            if(colorIndex == (self.elm.find(".colorPicker .color-option").length - 1))
-               colorIndex = -1;
-            
-            colorIndex++;
-            var color = $(self.elm.find(".colorPicker .color-option")[colorIndex]).attr("data-colorname");
-            self.colorPicker.setOption(color);
-            e.preventDefault();
-            self.elm.focus();
-        }
-    });
+    new TaskEditorKeyboardEvents(this.elm,this.SaveTask,this.nameField,this.notesField, this.estimate, this.startTimePicker, this.colorPicker);
 }
 
 $("#CreatePlannedTaskModal .go").click(function(){
     CreatePlannedTaskModal.SaveTask();
+});
+
+$("#CreatePlannedTaskModal .deletePlannedTask").click(function(){
+    CreatePlannedTaskModal.DeleteTask();
 });

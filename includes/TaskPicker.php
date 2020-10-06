@@ -52,6 +52,10 @@
 			</div>
 		</div>
 		<!-- /.modal-content -->
+		<div id="PlannedTaskPicker">
+			<h1>Planned Tasks</h1>
+			<div class="task-list"></div>
+		</div>
 	</div>
 	<!-- /.modal-dialog -->
 </div>

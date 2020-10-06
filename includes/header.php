@@ -29,8 +29,11 @@
 		<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 		<![endif]-->
 		
-		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="<?php echo $siteurl; ?>/js/javascriptTools.js?<?php echo $version; ?>"></script>
+		<!-- jquery -->
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+		<!-- jquery ui -->
+		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+		<script src="<?php echo $siteurl; ?>/js/javascriptTools.js?<?php echo $version; ?>"></script>
 		<script src="<?php echo $siteurl; ?>/bootstrap/js/bootstrap.min.js"></script>
         <script src="<?php echo $siteurl; ?>/js/moment.js"></script>
 		<script src="<?php echo $siteurl; ?>/js/backstretch.js"></script>

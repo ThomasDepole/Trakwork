@@ -18,7 +18,9 @@ var DayPlanner = function(date){
         PlannedTasks.forEach(task => {
             if(TimeCalc.DatesAreOnSameDay(task.date, self.date))
                 tasks.push(task);
-        })
+        });
+
+        tasks = tasks.sort((a, b) => (a.estimate > b.estimate) ? 1 : -1)
 
         return tasks;
     }
@@ -27,23 +29,62 @@ var DayPlanner = function(date){
         //render tasks
         self.html.tasks.html("");
         self.html.msg.html("");
+
+        //add task to the page
         self.tasks().forEach(task => {
             self.html.tasks.append(`<div class="task type-generaltask" data-id="${task.id}" style="background: ${task.GetColor().color} ; color: ${task.GetColor().fontcolor} ;">
                                         <div class="icon"><i class="fa ${task.icon}"></i></div>
                                         <div class="name">${task.name}</div>
                                     </div>`)
         });
-        self.html.tasks.find("[data-id]").click(function(){
-            var id = $(this).attr("data-id");
-            var task = $.grep(PlannedTasks, function(e){ return e.id == id })[0];
-            CreatePlannedTaskModal.EditTask(self, task);
-        });
         self.html.tasks.append(`<div class="task newPlanned" ><div class="icon"><i class="fa fa-plus"></i></div><div class="name">Add Task</div></div>`);
+        self.html.tasks.append(`<div class="task dropRegion" ><div class="dropLabel"> Drop Here </div> </div>`);
+        //bind events to the ui
         self.container.find(".newPlanned").click(function(){
             CreatePlannedTaskModal.CreateTask(self);
         });
+        self.html.tasks.find("[data-id]")
+            .click(function(){
+                if($(this).hasClass("noclick")){
+                    $(this).removeClass("noclick");
+                    return;
+                }
+                var id = $(this).attr("data-id");
+                var task = $.grep(PlannedTasks, function(e){ return e.id == id })[0];
+                CreatePlannedTaskModal.EditTask(self, task);
+            })
+            .draggable({ 
+                snap: ".dropRegion", 
+                snapMode: "inner",
+                zIndex: 500,
+                scroll: true,
+                scrollSensitivity: 200,
+                start: function( event, ui ) {
+                    $(this).addClass("noclick");
+                    $("body, .day").addClass("droppable");
+                },
+                stop:function(event, ui){
+                    $("body, .day").removeClass("droppable");
+                    
+                    AllPlanners.forEach(planner =>{
+                        var startY = planner.container.offset().top;
+                        var endY = startY + planner.container.height();
 
-        var minsInDay = 480; //todo fetch this from settings
+                        var taskY = $(this).offset().top;
+                        if(taskY > startY && taskY < endY){
+                            var id = $(this).attr("data-id");
+                            var task = $.grep(PlannedTasks, function(e){ return e.id == id })[0];
+
+                            task.date = planner.date;
+                            UpdatePlannedTask(task);
+                        }
+                    });
+
+                    self.renderAllPlanners();
+                }
+             });
+
+        var minsInDay = parseInt(GetSetting("DayLength"));
         var minsRemaining = minsInDay;
         //render progress bar
         self.html.progressBar.html("");
@@ -71,7 +112,7 @@ var DayPlanner = function(date){
 
     //this can be called to render all planners on the page.
     this.renderAllPlanners = function(){
-        for(var i=0; i<planners.length; i++)
+        for(var i=0; i<AllPlanners.length; i++)
             AllPlanners[i].render();
     }
 
@@ -90,6 +131,7 @@ var DayPlanner = function(date){
         });
     }
 
+    //add planner to list of planners
     AllPlanners.push(self);
 }
 
@@ -104,4 +146,9 @@ $(function(){
         date.setDate(date.getDate() + i);
         new DayPlanner(date);
     }
+
+    AddUndoRefreshFunction(function(){
+        for(var i=0; i<AllPlanners.length; i++)
+            AllPlanners[i].render();
+    });
 });

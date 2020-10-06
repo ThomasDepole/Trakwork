@@ -36,7 +36,6 @@
 				var taskStart = firstTaskInMemory.getYear() +  firstTaskInMemory.getMonth() + firstTaskInMemory.getDate();
 
 				if(today > taskStart){
-					Tasks = [];
 					$(".startday").show();
 					$(".task.new").hide();
 				}
@@ -51,6 +50,7 @@
 			});
 			
 			$(".openStartModel").click(function(){
+				Tasks = [];
 				TaskPicker.Reset();
 				TaskPicker.Show();
 				ClearDay();

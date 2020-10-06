@@ -4,6 +4,8 @@ var Tasks = new Array();
 var Settings = new Array();
 var TaskStyles = new Array();
 var PlannedTasks = new Array();
+var Estimates = new Array();
+var TaskPickerTypes = new Array();
 var DayProgressMax = 480;
 var DefaultDayLength = 480;
 var icons; //loaded in index TODO find a better way to load these
@@ -17,7 +19,98 @@ $(document).ready(function(){
     RenderEstimates();
 });
 
-/* Task Styles */
+/***************
+ * Models 
+ ***************/
+var Task = function(type, name, link_id, start_time, color, icon){
+    var self = this;
+    this.type = type;
+    this.name = name;
+    this.start = start_time;
+    this.end = null;
+    this.link_id = link_id;
+    this.notes = null;
+    this.color = color;
+    this.icon = icon;
+
+    this.StartTime = function(){
+        var date = new Date(this.start);
+        var time = getTimeValues(date, true);
+        var html = '' + time[0] + ':' + time[1] + time[3];
+        return html
+    }
+
+    this.EndTime = function(){
+        if(this.end != null){
+            var date = new Date(this.end);
+            var time = getTimeValues(date, true);
+            var html = '' + time[0] + ':' + time[1] + time[3];
+            return html
+        }else{
+            return "active";
+        }
+    }
+
+    this.StartDate = function(){
+        return new Date(this.start);
+    }
+
+    this.EndDate = function(){
+        if(this.end != null)
+            return new Date(this.end);//ended task
+        else
+            return new Date(); //current task
+    }
+
+    this.GetColor = function(){
+        return $.grep(TaskStyles, function(e){ return e.name == self.color })[0];
+    }
+}
+
+var PlannedTask = function(){
+    var self = this;
+    this.id;
+    this.name;
+    this.color;
+    this.icon;
+    this.notes;
+    this.priority;
+    this.deadline;
+    this.date;
+    this.createdDate;
+    this.estimate;
+    this.pastDue = false;
+
+    this.GetColor = function(){
+        return $.grep(TaskStyles, function(e){ return e.name == self.color })[0];
+    }
+}
+
+var TaskStyle = function(name, color, fontcolor, isStriped){
+    this.name = name;
+    this.color = color;
+    this.fontcolor = fontcolor;
+    this.isStriped = (typeof isStriped !== 'undefined') ? isStriped : false;
+}
+
+var Estimate = function(task_id, hours){
+    this.task_id = task_id;
+    this.hours = hours;
+}
+
+var TaskPickerType = function(){
+    this.type = null;
+    this.label = null;
+    this.icon = null;
+    this.billable = null;
+    this.can_nametask = null;
+    this.nametasklabel = null
+    this.color = null;
+}
+
+/******************* 
+* Task Styles 
+******************/
 function GenerateStripeColor(colorDark, colorLight){
     return "repeating-linear-gradient(135deg, "+colorLight+", "+colorLight+" 10px, " + colorDark +" 10px, "+colorDark+" 20px)";
 }
@@ -48,7 +141,9 @@ TaskStyles.push(new TaskStyle("stripe-crimson", GenerateStripeColor("#F95252", "
 TaskStyles.push(new TaskStyle("stripe-black", GenerateStripeColor("#000000", "#515151"), "#FFF", true) );
 TaskStyles.push(new TaskStyle("stripe-yellow", GenerateStripeColor("#c1ab10", "#6b5f09"), "#FFF", true) );
 
-/** Time Functions **/
+/*******************
+ * Time Functions
+ *******************/
 Date.prototype.addMinutes = function(minutes) {
     this.setMinutes(this.getMinutes() + minutes);
     return this;
@@ -84,7 +179,6 @@ function getTimeValues(date, astronomical_time){
 
     return time;
 }
-
 
 function GetDifferenceInHours(start, end){
     laterdate = new Date(start);
@@ -134,19 +228,6 @@ function GetHoursDifference(laterdate,earlierdate) {
     return hoursDifference + "hr " + minutesDifference + "m";
 }
 
-/*
- function HoursRemaining(){
- var time = null;
-
- for(var i in Tasks){
- var difference = new Date(Tasks[i].end).getTime() - new Date(Tasks[i].start).getTime();
- time+= difference;
- }
-
- console.log(new Date(time).getHours());
- }
- */
-
 function gettimespent(id){
     if(Tasks[id].end != null){
         //ended task
@@ -174,7 +255,9 @@ function gethours(id){
     return GetDifferenceInHours(laterdate, earlierdate);
 }
 
-/**  Util functions **/
+/*******************
+ * Util functions 
+ *******************/
 function guid()
 {
     function s4()
@@ -183,9 +266,11 @@ function guid()
     } // End Function s4 
 
     return s4() + s4() + '-' + s4() + '-' + "4" + s4().substr(1) + '-' + s4() + '-' + s4() + s4() + s4();
-} // End Function guid 
+} 
 
-/** Saving and Loading **/
+/************************
+ *  Saving and Loading 
+ ************************/
 //Settings
 function LoadSettings(){
     setingsStorage = $.parseJSON(localStorage.getItem("settings"));
@@ -249,12 +334,25 @@ function LoadPlannedTasks(){
     if(taskModels == null)
         return;
     
+    //determine today
+    var today = new Date();
+    today.setHours(0);
+    today.setMinutes(1);
+
     taskModels.forEach(taskModel => {
+        //create the task object based of model
         var task = new PlannedTask();
+        //set all the properties
         Object.assign(task, taskModel);
+        //handle dates
         task.date = new Date(task.date);
         if(task.deadline != "")
             task.deadline = new Date(task.deadline);
+
+        //move older planned tasks to today. 
+        if(task.date < today)
+            task.date = today;
+
         PlannedTasks.push(task);
     });
 }
@@ -271,13 +369,200 @@ function LoadEstimates(){
 
     if(estimateStorage != null){
         for(var i in estimateStorage){
-            Estimate.Add(estimateStorage[i].task_id, estimateStorage[i].hours);
+            Estimates.push(new Estimate(estimateStorage[i].task_id, estimateStorage[i].hours));
         }
     }
     RenderDayProgress();
 }
 
-/** Rendering **/
+/***************
+ * CRUD Functions 
+ ***************/
+
+//Undo
+var undoActions = [];
+var undoRefreshFunctions = [];
+function Undo(){
+    if(undoActions.length <= 0)
+        return;
+
+    //pop and run undo action
+    var action = undoActions.pop();
+    if(typeof action === "function")
+        action();
+
+    //execute all refresh functions
+    undoRefreshFunctions.forEach(refreshAction => {
+        if(typeof refreshAction === "function")
+            refreshAction();
+    });
+}
+function AddUndoAction(action){
+    if(typeof action === "function")
+        undoActions.push(action);
+}
+function AddUndoRefreshFunction(action){
+    if(typeof action === "function")
+        undoRefreshFunctions.push(action);
+}
+
+//estimates
+function SetEstimate(task_id, hours){
+    for(i in Estimates){
+        if(Estimates[i].task_id == task_id){
+            if(hours <= 0)
+                Estimates.splice(i, 1);
+            else
+                Estimates[i].hours = hours;
+
+            SaveEstimates();
+            RenderEstimates();
+            return;
+        }
+    }
+    if(hours <= 0) return;
+    Estimates.push( new Estimate(task_id, hours) );
+    SaveEstimates();
+    RenderEstimates();
+}
+
+//picker types
+function CreatePickerType(type, label, icon, billable, can_nametask, nametasklabel, color){
+    var t = new TaskPickerType();
+    t.type = type;
+    t.label = label;
+    t.icon = icon;
+    t.billable = billable;
+    t.can_nametask = can_nametask;
+    t.nametasklabel = nametasklabel;
+    t.color = color;
+
+    TaskPickerTypes.push(t);
+}
+
+//tasks
+function StartTask(type, name, startTime, color, icon){
+    if(typeof startTime == "undefined")
+        startTime = Date.now();
+    else
+        startTime = new Date(startTime).getTime();
+
+    if(Tasks.length > 0)
+        Tasks[Tasks.length - 1].end = startTime;
+
+    if(typeof icon == "undefined")
+        icon = "fa-file-o";
+
+    var id = Tasks.push( new Task(type, name, null, startTime, color, icon));
+    id = id - 1;
+
+    RenderTasks(".tasks");
+    RenderDayProgress();
+    SaveTasks();
+    SaveEstimates();
+
+    return id
+}
+
+function DeleteLastTask(){    
+    if(Tasks.length == 0)
+        return;
+    var task = null;
+    var lastIndex = Tasks.length - 1;
+    
+    //update last task with null end date if any exist 
+    if(lastIndex > 0)
+        Tasks[lastIndex - 1].end = null; //set the last 
+
+    task = Tasks[lastIndex];
+    Tasks.splice(lastIndex, 1);
+
+    //SaveTasks();
+    RenderTasks(".Tasks");
+    RenderDayProgress();
+
+    //add the undo action
+    AddUndoAction(function(){
+        //update the last start date
+        if(Tasks.length > 1)
+            Tasks[Tasks.length - 1].end = task.start;
+        
+        //add in task
+        Tasks.push(task);
+
+        //SaveTasks();
+        RenderTasks(".Tasks");
+        RenderDayProgress();
+    });
+}
+
+//planned tasksh
+function CreatePlannedTask(name, color, icon, notes, deadline, date, estimate, priority){
+    var plan = new PlannedTask();
+    plan.id = guid();
+    plan.name = name;
+    plan.color = color;
+    plan.icon = icon;
+    plan.notes = notes;
+    plan.deadline = deadline;
+    plan.priority = priority;
+    plan.date = date;
+    plan.createdDate = date;
+    plan.estimate = estimate;
+
+    PlannedTasks.push(plan);
+
+    SavePlannedTasks();
+
+    return plan;
+}
+
+function UpdatePlannedTask(task){
+    for(var i = 0; i < PlannedTasks.length; i++){
+        if(PlannedTasks[i].id == task.id)
+            PlannedTasks[i] = task;
+    }
+    SavePlannedTasks();
+}
+
+function DeletePlannedTask(taskId){
+    var task = null;    
+    for(var i=0; i < PlannedTasks.length; i++){
+        if(PlannedTasks[i].id != taskId)
+            continue;
+        
+        task = PlannedTasks[i];
+        PlannedTasks.splice(i, 1);
+    }
+
+    SavePlannedTasks();
+    //add the undo action
+    AddUndoAction(function(){
+        PlannedTasks.push(task);
+        SavePlannedTasks();
+    });
+}
+
+function GetSortedPlannedTasks(date){
+    if(typeof date === "undefined")
+        date = new Date();
+    //todo finish this logic
+}
+
+//generic
+function ClearDay(){
+    Tasks = new Array();
+    Estimates = new Array();
+    RenderTasks(".tasks");
+    RenderDayProgress();
+    $(".dayReport").html("");
+    $(".progress-times").html("");
+    $(".task.new").show();
+}
+
+/***************
+ * Rendering 
+ ***************/
 function RenderTasks(selector){
     $(".tasks .task").unbind();
     $(selector).html("");
@@ -305,10 +590,12 @@ function RenderTasks(selector){
 
 function RenderDayProgress(){
     $(".DayProgress").html("");
+    var maxhour = parseInt(GetSetting("DayLength"));
+
     if(Tasks != null){
         var allprogress = null;
-        var maxhour = parseInt(GetSetting("DayLength"));
 
+        //offset max hour for non billable tasks
         for(var i in Tasks){
             if(Tasks[i].end != null)  
                 laterdate = new Date(Tasks[i].end);
@@ -324,6 +611,7 @@ function RenderDayProgress(){
             }
         }
 
+        //build out tasks
         for(var i in Tasks){
             var taskstate = null;
 
@@ -342,7 +630,7 @@ function RenderDayProgress(){
 
             var diff = laterdate.getTime() - earlierdate.getTime();
             var mins = Math.floor(diff/1000/60);
-            var width = (mins / maxhour) *100 ;
+            var width = (mins / maxhour) *100;
 
             //check if current task is over full work day
             preProgressTotal = allprogress;
@@ -368,10 +656,20 @@ function RenderDayProgress(){
 
             }
 
-
             $(".DayProgress").append('<div data-task_id="'+ i +'"   class="type-'+ Tasks[i].type+ ' '+taskstate+'"  style="width: '+width+'%; '+style+'"></div>');
-
         }
+        
+        //show planned tasks
+        var plannedTaskTime = 0;
+        PlannedTasks.forEach(task => {
+            if(!TimeCalc.DatesAreOnSameDay(task.date, new Date()))
+                return;
+
+            plannedTaskTime += task.estimate;
+
+            var plannedWidth = ((task.estimate * 60) / maxhour) * 100;
+            $(".DayProgress").append(`<div class="plannedTaskTime" style="width: ${plannedWidth}%; background: ${task.GetColor().color}"></div>`);
+        });
 
         if(Tasks.length != 0){
             var daystart = Tasks[0].StartTime();
@@ -524,7 +822,9 @@ function RenderEstimates(){
     }
 }
 
-
+/***************
+ * Alerts 
+ ***************/
 var Alerts = new Array();
 function AlertUser(id, message, priority){
 
@@ -535,19 +835,9 @@ function AlertUser(id, message, priority){
 
 }
 
-function ClearDay(){
-    Tasks = new Array();
-    Estimates = new Array();
-    RenderTasks(".tasks");
-    RenderDayProgress();
-    $(".dayReport").html("");
-    $(".progress-times").html("");
-    $(".task.new").show();
-}
-
-
-////////////////////////////////////////////
-//  Settings 
+/***************
+ * Settings 
+ ***************/
 function Setting(key, value){
     this.key = key;
     this.value = value;
@@ -580,198 +870,10 @@ function GetSetting(key){
 
     return value;
 }
-///////////////////////////
 
-
-//////////////////////////////////
-// Models and functions
-function Task(type, name, link_id, start_time, color, icon){
-    var self = this;
-    this.type = type;
-    this.name = name;
-    this.start = start_time;
-    this.end = null;
-    this.link_id = link_id;
-    this.notes = null;
-    this.color = color;
-    this.icon = icon;
-
-    this.StartTime = function(){
-        var date = new Date(this.start);
-        var time = getTimeValues(date, true);
-        var html = '' + time[0] + ':' + time[1] + time[3];
-        return html
-    }
-
-    this.EndTime = function(){
-        if(this.end != null){
-            var date = new Date(this.end);
-            var time = getTimeValues(date, true);
-            var html = '' + time[0] + ':' + time[1] + time[3];
-            return html
-        }else{
-            return "active";
-        }
-    }
-
-    this.StartDate = function(){
-        return new Date(this.start);
-    }
-
-    this.EndDate = function(){
-        if(this.end != null)
-            return new Date(this.end);//ended task
-        else
-            return new Date(); //current task
-    }
-
-    this.GetColor = function(){
-        return $.grep(TaskStyles, function(e){ return e.name == self.color })[0];
-    }
-}
-
-var PlannedTask = function(){
-    var self = this;
-    this.id;
-    this.name;
-    this.color;
-    this.icon;
-    this.notes;
-    this.priority;
-    this.deadline;
-    this.date;
-    this.estimate;
-
-    this.GetColor = function(){
-        return $.grep(TaskStyles, function(e){ return e.name == self.color })[0];
-    }
-}
-
-
-function StartTask(type, name, startTime, color, icon){
-    if(typeof startTime == "undefined")
-        startTime = Date.now();
-    else
-        startTime = new Date(startTime).getTime();
-
-    if(Tasks.length > 0)
-        Tasks[Tasks.length - 1].end = startTime;
-
-    if(typeof icon == "undefined")
-        icon = "fa-file-o";
-
-    var id = Tasks.push( new Task(type, name, null, startTime, color, icon));
-    id = id - 1;
-
-    RenderTasks(".tasks");
-    RenderDayProgress();
-    SaveTasks();
-    SaveEstimates();
-
-    return id
-}
-
-function CreatePlannedTask(name, color, icon, notes, deadline, date, estimate, priority){
-    var plan = new PlannedTask();
-    plan.id = guid();
-    plan.name = name;
-    plan.color = color;
-    plan.icon = icon;
-    plan.notes = notes;
-    plan.deadline = deadline;
-    plan.priority = priority;
-    plan.date = date;
-    plan.estimate = estimate;
-
-    PlannedTasks.push(plan);
-
-    SavePlannedTasks();
-
-    return plan;
-}
-
-function UpdatePlannedTask(task){
-    for(var i = 0; i < PlannedTasks.length; i++){
-        if(PlannedTasks[i].id == task.id)
-            PlannedTasks[i] = task;
-    }
-    SavePlannedTasks();
-}
-
-/////////////////////////////
-
-////////////////////////////////////////
-// Task Styles
-
-function TaskStyle(name, color, fontcolor, isStriped){
-    this.name = name;
-    this.color = color;
-    this.fontcolor = fontcolor;
-    this.isStriped = (typeof isStriped !== 'undefined') ? isStriped : false;
-}
-
-//////////////////////////////////////
-//Estimate 
-var Estimates = new Array();
-function Estimate(task_id, hours){
-    this.task_id = task_id;
-    this.hours = hours;
-}
-
-Estimate.Add = function(task_id, hours){
-    var id = Estimates.push( new Estimate(task_id, hours) );
-    return id;
-}
-
-var SetEstimate = function(task_id, hours){
-    for(i in Estimates){
-        if(Estimates[i].task_id == task_id){
-            if(hours <= 0)
-                Estimates.splice(i, 1);
-            else
-                Estimates[i].hours = hours;
-
-            SaveEstimates();
-            RenderEstimates();
-            return;
-        }
-    }
-    if(hours <= 0) return;
-    Estimates.push( new Estimate(task_id, hours) );
-    SaveEstimates();
-    RenderEstimates();
-}
-
-/////////////////////////////////////
-//Task Picker
-var TaskPickerTypes = new Array();
-
-function TaskPickerType(){
-    this.type = null;
-    this.label = null;
-    this.icon = null;
-    this.billable = null;
-    this.can_nametask = null;
-    this.nametasklabel = null
-    this.color = null;
-}
-
-TaskPickerType.AddType = function(type, label, icon, billable, can_nametask, nametasklabel, color){
-    var id = TaskPickerTypes.push( new TaskPickerType());
-    id = id - 1;
-    TaskPickerTypes[id].type = type;
-    TaskPickerTypes[id].label = label;
-    TaskPickerTypes[id].icon = icon;
-    TaskPickerTypes[id].billable = billable;
-    TaskPickerTypes[id].can_nametask = can_nametask;
-    TaskPickerTypes[id].nametasklabel = nametasklabel;
-    TaskPickerTypes[id].color = color;
-}
-/////////////////////////
-
-
-///////////////////////////////////
-//Time Calculator Object 
+/***************
+ * Time Calculator Helper Functions 
+ ***************/
 var TimeCalc = new function TimeCalculator(){
     this.TimeSpentOnTask_InHours =  function(task_id){
         if(Tasks[task_id].end != null){

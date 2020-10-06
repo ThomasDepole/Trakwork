@@ -1,14 +1,15 @@
 // Add default task type
-//TaskPickerType.AddType("ticket", "Ticket Item", "fa-briefcase", true, true, "Ticket Number", "orange");
-TaskPickerType.AddType("generaltask", "Task", "fa-file-o", true, true, "Task Name", "green");
-TaskPickerType.AddType("lunch", "Take Lunch", "fa-apple", false, false, "Lunch", "lightblue");
-TaskPickerType.AddType("nonbillable", "Non Billable", "fa-exclamation-triangle", false, false, "Non Billable", "red");
+CreatePickerType("generaltask", "Task", "fa-file-o", true, true, "Task Name", "green");
+CreatePickerType("lunch", "Take Lunch", "fa-apple", false, false, "Lunch", "lightblue");
+CreatePickerType("nonbillable", "Non Billable", "fa-exclamation-triangle", false, false, "Non Billable", "red");
 
 var TaskPicker = new function(){
+    var self = this;
     var _taskpicker = this;
     this.elm = $("#StartTaskModal");
     this.target = this.elm[0];
     this.isOpen = function(){ return (this.elm.hasClass("in")) }
+
     //Create the pickers
     this.colorPicker = new ColorPicker( $("#StartTaskModal .colorPicker") );
     this.startTimePicker = new StartTimePicker( $("#StartTaskModal .startTime") );
@@ -71,15 +72,15 @@ var TaskPicker = new function(){
     }
 
     this.StartTask = function(){
-        var type = this.elm.find('.type-options input[name="tasktype"]').val();
-        var name = this.elm.find('input[name=name]').val();
-        var color = this.elm.find('input[name="color"]').val();
-        var resumeID = this.elm.find('input[name="resumeTaskID"]').val();
-        var icon = this.elm.find('input[name="icon"]').val();
+        var type = self.elm.find('.type-options input[name="tasktype"]').val();
+        var name = self.elm.find('input[name=name]').val();
+        var color = self.elm.find('input[name="color"]').val();
+        var resumeID = self.elm.find('input[name="resumeTaskID"]').val();
+        var icon = self.elm.find('input[name="icon"]').val();
 
         var id = StartTask(type, name, $('#StartTaskModal input[name="startTimeValue"]').val(), color, icon);
 
-        SetEstimate(id, this.estimate.GetValue());
+        SetEstimate(id, self.estimate.GetValue());
 
         if (resumeID != "")
             Tasks[id].link_id = resumeID;
@@ -92,7 +93,7 @@ var TaskPicker = new function(){
         RenderDayProgress();
         SaveTasks();
         SaveEstimates();
-        this.Hide();
+        self.Hide();
         return id;
     }
 
@@ -107,10 +108,11 @@ var TaskPicker = new function(){
     }
 
     this.Reset = function(){
-        this.elm.find(".type-selector, .estimate, .colorPicker, iconPicker").show();
-        this.elm.find(".modal-footer,  .type-options,  .resume-option").hide();
-        this.elm.find('input[name="goal"]').val("");
-        this.elm.find('input[name="resumeTaskID"]').val("");
+        self.elm.find(".type-selector, .estimate, .colorPicker, iconPicker").show();
+        self.elm.find(".modal-footer,  .type-options,  .resume-option").hide();
+        self.elm.find('input[name="goal"]').val("");
+        self.elm.find('input[name="resumeTaskID"]').val("");
+        self.elm.find("[name=name]").addClass("has-default-value");
         this.estimate.Reset();
         var currentDateTime = new Date();
         this.startTimePicker.setStartTime(currentDateTime);
@@ -130,10 +132,27 @@ var TaskPicker = new function(){
             this.elm.find(".resumetask, .endDay-option").show();
         }
 
+        _taskpicker.renderPlannedTasks();
 
         if(!this.isOpen())
             this.elm.modal();
     }
+
+    this.renderPlannedTasks = function(){
+        self.elm.find("#PlannedTaskPicker .task-list").html("");
+        PlannedTasks.forEach(task =>{
+            if(!TimeCalc.DatesAreOnSameDay(new Date, task.date))
+                return;
+
+            self.elm.find("#PlannedTaskPicker .task-list").append(`<div class="task type-generaltask" data-id="${task.id}" style="background: ${task.GetColor().color} ; color: ${task.GetColor().fontcolor} ;">
+                                                                        <div class="icon"><i class="fa ${task.icon}"></i></div>
+                                                                        <div class="name">${task.name}</div>
+                                                                    </div>`);
+        });
+    }
+
+    //keyboard events
+    new TaskEditorKeyboardEvents(this.elm,this.StartTask,this.elm.find('input[name=name]'), null, this.estimate, this.startTimePicker, this.colorPicker);
 }
 
 TaskPicker.elm.on('hidden.bs.modal', function () {
@@ -150,12 +169,10 @@ for(var i in TaskPickerTypes){
     $("#StartTaskModal .thetasks").append(html);
 }
 
-
 $(".type-option").click(function(){
     var type = $(this).attr("data-tasktype");
     TaskPicker.SelectType(type);
 });
-
 
 $("#StartTaskModal .go").click(function(){
     TaskPicker.StartTask();

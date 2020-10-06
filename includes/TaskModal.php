@@ -26,6 +26,7 @@
 				<input type="hidden" name="taskid" id="taskid" />		
 			</div>
 			<div class="modal-footer">
+                <button type="button" class="btn btn-danger deleteTask" data-dismiss="modal" style="float:left">Delete</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-primary saveTask">Save</button>
 			</div>
@@ -96,6 +97,36 @@
             this.estimate.setEstimate(0);
             $("#TaskModal").modal('hide');
         }
+
+        this.DeleteTask = function(){
+            DeleteLastTask();
+        }
+
+        this.SaveTask = function(){
+            var id = $("#TaskModal #taskid").val();
+            Tasks[id].notes = $("#TaskModal #notes").val();
+            Tasks[id].name = $("#TaskModal #taskname").val();
+            Tasks[id].type = $('#TaskModal #tasktype').val();
+            Tasks[id].type = $('#TaskModal #tasktype').val();
+            Tasks[id].icon = $('#TaskModal input[name="icon"]').val();
+            Tasks[id].color = $('#TaskModal input[name="color"]').val();
+
+            SetEstimate(id, TaskDetails.estimate.GetValue());
+
+            for(var i in Tasks){
+                if(Tasks[i].link_id == id){
+                    Tasks[i].name = $("#TaskModal #taskname").val();
+                }
+            }
+            
+            SaveTasks();
+            RenderTasks(".Tasks");
+            RenderDayProgress();
+            TaskDetails.Hide();
+        }
+
+        //keyboard events
+        new TaskEditorKeyboardEvents(this.elm,this.SaveTask,this.elm.find('input[name=name]'), $("#TaskModal #notes"), this.estimate, null, this.colorPicker);
     }
 
     $(function(){
@@ -103,25 +134,12 @@
     });
 
     $("body").delegate("#TaskModal .saveTask", "click", function(){
-        var id = $("#TaskModal #taskid").val();
-        Tasks[id].notes = $("#TaskModal #notes").val();
-        Tasks[id].name = $("#TaskModal #taskname").val();
-        Tasks[id].type = $('#TaskModal #tasktype').val();
-        Tasks[id].type = $('#TaskModal #tasktype').val();
-        Tasks[id].icon = $('#TaskModal input[name="icon"]').val();
-        Tasks[id].color = $('#TaskModal input[name="color"]').val();
-
-        SetEstimate(id, TaskDetails.estimate.GetValue());
-
-        for(var i in Tasks){
-            if(Tasks[i].link_id == id){
-                Tasks[i].name = $("#TaskModal #taskname").val();
-            }
-        }
-        SaveTasks();
-        RenderTasks(".Tasks");
-        RenderDayProgress();
-        TaskDetails.Hide();
+        TaskDetails.SaveTask();
     });
+
+    $("body").delegate("#TaskModal .deleteTask", "click", function(){
+        TaskDetails.DeleteTask();
+    });
+    
 </script>
 
