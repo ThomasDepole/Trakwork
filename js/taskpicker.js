@@ -7,6 +7,9 @@ var TaskPicker = new function(){
     var self = this;
     var _taskpicker = this;
     this.elm = $("#StartTaskModal");
+    this.quickPicker = this.elm.find("#QuickTaskPicker");
+    this.popup = this.elm.find(".modal-content");
+
     this.target = this.elm[0];
     this.isOpen = function(){ return (this.elm.hasClass("in")) }
 
@@ -34,41 +37,39 @@ var TaskPicker = new function(){
         this.elm.find(".type-options .typelabel").html(typeObject.nametasklabel);
         this.elm.find('.type-options input[name="tasktype"]').val(type);
         this.elm.find(".type-options, .modal-footer").show();
-        this.elm.find(".type-selector").hide();
         this.iconPicker.SelectIcon(typeObject.icon);
 
         //Colors
         this.colorPicker.setOption(typeObject.color);
-        this.Show();
+        this.HideQuickPicker();
     }
 
-    this.ResumeTaskPicker = function(){
-        this.elm.find(".resumetasks-chooser").show();
-        this.elm.find(".type-selector, .estimate, .colorPicker, .iconPicker").hide();
-        this.elm.find(".resume-option").unbind();
-        console.log(Tasks);
-        for(var i in Tasks){
-            if(Tasks[i].link_id == null){
-                var html = '<div class="resume-option" data-task="'+i+'">' + Tasks[i].name + '</div>';
-                this.elm.find(".resumetasks-chooser").append(html);
-            }
-        }
-        this.elm.find(".resume-option").click(function(){
-            _taskpicker.ResumeTaskOptions($(this).attr("data-task"));
-        });
-        this.Show();
-    }
-
-    this.ResumeTaskOptions = function(task_id){
+    this.PrefillResumeTask = function(task_id){
         var type = Tasks[task_id].type;
         var name = Tasks[task_id].name;
 
-        this.elm.find('input[name="name"]').val(name).removeClass("keypress-capture").hide();
-        this.elm.find(".type-options .typelabel").html(name);
-        this.elm.find('.type-options input[name="tasktype"]').val(type);
-        this.elm.find(".resumetasks-chooser, .estimateContainer").hide();
-        this.elm.find(".type-options, .modal-footer").show();
-        this.elm.find('input[name="resumeTaskID"]').val(task_id);
+        self.HideQuickPicker();
+
+        self.elm.find('input[name="name"]').val(name).removeClass("keypress-capture").hide();
+        self.elm.find(".type-selector, .estimate, .colorPicker, .iconPicker").hide();
+        self.elm.find(".type-options .typelabel").html(name);
+        self.elm.find('.type-options input[name="tasktype"]').val(type);
+        self.elm.find(".type-options, .modal-footer").show();
+        self.elm.find('input[name="resumeTaskID"]').val(task_id);
+
+    }
+
+    this.PrefillPlannedTask = function(plannedTaskId){
+        var task = $.grep(PlannedTasks, function(e){ return e.id == plannedTaskId })[0];
+        self.HideQuickPicker();
+
+        self.elm.find('input[name="name"]').val(task.name).removeClass("keypress-capture").hide();
+        self.elm.find(".type-selector, .estimate, .colorPicker, .iconPicker").hide();
+        self.elm.find(".type-options .typelabel").html(task.name);
+        self.elm.find(".type-options, .modal-footer").show();
+        self.elm.find('input[name="plannedTaskID"]').val(task.id);
+
+        self.colorPicker.setOption(task.GetColor().name);
     }
 
     this.StartTask = function(){
@@ -76,6 +77,7 @@ var TaskPicker = new function(){
         var name = self.elm.find('input[name=name]').val();
         var color = self.elm.find('input[name="color"]').val();
         var resumeID = self.elm.find('input[name="resumeTaskID"]').val();
+        var plannedID = self.elm.find('input[name="plannedTaskID"]').val();
         var icon = self.elm.find('input[name="icon"]').val();
 
         var id = StartTask(type, name, $('#StartTaskModal input[name="startTimeValue"]').val(), color, icon);
@@ -84,6 +86,9 @@ var TaskPicker = new function(){
 
         if (resumeID != "")
             Tasks[id].link_id = resumeID;
+
+        if(plannedID != "")
+            Tasks[id].plannedTaskId = plannedID;
 
         $(".task.new .name").html("Change Task");
         $(".task.new").show();
@@ -107,22 +112,11 @@ var TaskPicker = new function(){
         this.Hide();
     }
 
-    this.Reset = function(){
-        self.elm.find(".type-selector, .estimate, .colorPicker, iconPicker").show();
-        self.elm.find(".modal-footer,  .type-options,  .resume-option").hide();
-        self.elm.find('input[name="goal"]').val("");
-        self.elm.find('input[name="resumeTaskID"]').val("");
-        self.elm.find("[name=name]").addClass("has-default-value");
-        this.estimate.Reset();
-        var currentDateTime = new Date();
-        this.startTimePicker.setStartTime(currentDateTime);
-    }
-
     this.Hide = function(){
         this.elm.modal("hide");
     }
 
-    this.Show = function(){
+    this.Reset = function(){
         if(Tasks.length == 0)
             this.elm.find(".resumetask, .endDay-option").hide();
         else if(Tasks.length == 1){
@@ -132,24 +126,108 @@ var TaskPicker = new function(){
             this.elm.find(".resumetask, .endDay-option").show();
         }
 
-        _taskpicker.renderPlannedTasks();
+        self.elm.find(".estimate, .colorPicker, iconPicker").show();
+        self.elm.find(".modal-footer, .endDay-conform").hide();
+        self.elm.find(".type-selector, .estimate, .colorPicker, .iconPicker").show();
+        self.elm.find('input[name="goal"]').val("");
+        self.elm.find('input[name="resumeTaskID"]').val("");
+        self.elm.find('input[name="plannedTaskID"]').val("");
+        self.elm.find("[name=name]").addClass("has-default-value");
+        self.estimate.Reset();
+        var currentDateTime = new Date();
+        self.startTimePicker.setStartTime(currentDateTime);
+
+        _taskpicker.RenderQuickOptions();
+    }
+
+    this.Show = function(){
+        self.Reset();
 
         if(!this.isOpen())
             this.elm.modal();
+
+        self.ShowQuickPicker();
     }
 
-    this.renderPlannedTasks = function(){
+    this.RenderQuickOptions = function(){
         self.elm.find("#PlannedTaskPicker .task-list").html("");
         PlannedTasks.forEach(task =>{
             if(!TimeCalc.DatesAreOnSameDay(new Date, task.date))
                 return;
 
-            self.elm.find("#PlannedTaskPicker .task-list").append(`<div class="task type-generaltask" data-id="${task.id}" style="background: ${task.GetColor().color} ; color: ${task.GetColor().fontcolor} ;">
-                                                                        <div class="icon"><i class="fa ${task.icon}"></i></div>
-                                                                        <div class="name">${task.name}</div>
-                                                                    </div>`);
+            self.elm.find("#PlannedTaskPicker .task-list")
+                    .append(`<div class="task quickTaskOption" data-type="planned" data-id="${task.id}" style="background: ${task.GetColor().color} ; color: ${task.GetColor().fontcolor} ;">
+                                <div class="icon"><i class="fa ${task.icon}"></i></div>
+                                <div class="name">${task.name}</div>
+                            </div>`);
         });
+        
+        this.elm.find("#ResumeTaskOptions .task-list").html("");
+        for(var i in Tasks){
+            if(Tasks[i].link_id == null){
+                //var html = '<div class="resume-option" data-task="'+i+'">' + Tasks[i].name + '</div>';
+                var html = `<div class="task quickTaskOption" data-type="resume" data-id="${i}" style="background: ${Tasks[i].GetColor().color} ; color: ${Tasks[i].GetColor().fontcolor} ;">
+                                <div class="icon"><i class="fa ${Tasks[i].icon}"></i></div>
+                                <div class="name">${Tasks[i].name}</div>
+                            </div>`;
+                this.elm.find("#ResumeTaskOptions .task-list").append(html);
+            }
+        }
     }
+
+    this.ShowQuickPicker = function(){
+        if(!this.isOpen())
+            this.elm.modal();
+
+        self.quickPicker.show();
+        self.popup.hide();
+    }
+
+    this.HideQuickPicker = function(){
+        if(!this.isOpen())
+            this.elm.modal();
+
+        self.quickPicker.hide();
+        self.popup.show();
+    }
+
+    //bind click events for quick options
+    this.elm.delegate(".quickTaskOption", "click", function(){
+        var type = $(this).attr("data-type");
+        TaskPicker.HideQuickPicker();
+    
+        if(type == "endDay"){
+            $(".endDay-conform").show();
+            return;
+        }
+    
+        if(type == "generalTask"){
+            TaskPicker.SelectType("generaltask");
+            return;
+        }
+    
+        if(type == "lunch"){
+            TaskPicker.SelectType("lunch");
+            return;
+        }
+    
+        if(type == "nonBillable"){
+            TaskPicker.SelectType("nonbillable");
+            return;
+        }
+
+        if(type == "resume"){
+            var id = $(this).attr("data-id");
+            TaskPicker.PrefillResumeTask(id);
+            return;
+        }
+
+        if(type == "planned"){
+            var id = $(this).attr("data-id");
+            TaskPicker.PrefillPlannedTask(id);
+            return;
+        }
+    });
 
     //keyboard events
     new TaskEditorKeyboardEvents(this.elm,this.StartTask,this.elm.find('input[name=name]'), null, this.estimate, this.startTimePicker, this.colorPicker);
@@ -178,14 +256,7 @@ $("#StartTaskModal .go").click(function(){
     TaskPicker.StartTask();
 });
 
-$(".resumetask").click(function(){
-    TaskPicker.ResumeTaskPicker();
-});
 
-$(".endDay-option").click(function(){
-    $(".type-selector").hide();
-    $(".endDay-conform").show();
-});
 
 $(".endDay-confirm").click(function(){
     $(".endDay-conform").hide();
@@ -193,7 +264,28 @@ $(".endDay-confirm").click(function(){
 });
 
 $(".endDay-no").click(function(){
-    $(".endDay-conform").hide();
-    $(".type-selector").show();
-    $(".endDay-conform").hide();
+    TaskPicker.ShowQuickPicker();
+});
+
+//apply styles
+$(function(){
+    $(".quickTaskOption[data-type=generalTask]").css({
+        "background": TaskStyles[0].color,
+        "color": TaskStyles[0].fontcolor
+    }); 
+    
+    $(".quickTaskOption[data-type=nonBillable]").css({
+        "background": TaskStyles[3].color,
+        "color": TaskStyles[3].fontcolor
+    }); 
+
+    $(".quickTaskOption[data-type=endDay]").css({
+        "background": TaskStyles[8].color,
+        "color": TaskStyles[8].fontcolor
+    }); 
+
+    $(".quickTaskOption[data-type=lunch]").css({
+        "background": TaskStyles[2].color,
+        "color": TaskStyles[2].fontcolor
+    }); 
 });

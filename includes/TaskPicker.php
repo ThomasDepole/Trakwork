@@ -8,17 +8,7 @@
 				<h4 class="modal-title" id="myModalLabel">Start/Change Task</h4>
 			</div>
 			<div class="modal-body">
-				
-				<div class="type-selector" >
-					
-					<div class="resumetask  task"><div class="icon"><i class="fa fa-refresh" ></i></div><div class="name">Resume Task</div></div>
-					
-					<div class="thetasks"></div>
-					
-					<div class="endDay-option  task"><div class="icon"><i class="fa fa-beer" ></i></div><div class="name">End Day</div></div>
-					
-				</div>
-				
+			
 				<div class="type-options" style="display: none;">
                     <span class="typelabel"> Name </span>  <input type="text" name="name" value="" />
                     <br  />
@@ -32,12 +22,12 @@
 
                     <div class="iconPicker"></div>
 
-                    <input type="hidden" name="resumeTaskID">
-                    <input type="hidden" name="tasktype">
+                    <input type="hidden" name="resumeTaskID"/>
+					<input type="hidden" name="plannedTaskID"/>
+                    <input type="hidden" name="tasktype"/>
 
 				</div>
 				
-				<div class="resumetasks-chooser"></div>
 				<div class="endDay-conform" style="display: none;">
 					Are you sure you want to end?
 					<br />
@@ -52,10 +42,40 @@
 			</div>
 		</div>
 		<!-- /.modal-content -->
-		<div id="PlannedTaskPicker">
-			<h1>Planned Tasks</h1>
-			<div class="task-list"></div>
+		<div id="QuickTaskPicker">
+			<div id="QuickOptions">
+				<h1>Quick Options</h1>
+				<div class="task-list">
+					<div class="task quickTaskOption" data-type="generalTask">
+						<div class="icon"><i class="fa fa-file-o"></i></div>
+						<div class="name">Task</div>
+					</div>
+					<div class="task quickTaskOption" data-type="lunch">
+						<div class="icon"><i class="fa fa-apple"></i></div>
+						<div class="name">Lunch</div>
+					</div>
+					<div class="task quickTaskOption" data-type="nonBillable">
+						<div class="icon"><i class="fa fa-file-o"></i></div>
+						<div class="name">Non Billable</div>
+					</div>
+					<div class="task quickTaskOption" data-type="endDay">
+						<div class="icon"><i class="fa fa-beer"></i></div>
+						<div class="name">End Day</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="PlannedTaskPicker">
+				<h1>Planned Tasks</h1>
+				<div class="task-list"></div>
+			</div>
+
+			<div id="ResumeTaskOptions">
+				<h1>Resume a Task</h1>
+				<div class="task-list"></div>
+			</div>
 		</div>
+
 	</div>
 	<!-- /.modal-dialog -->
 </div>

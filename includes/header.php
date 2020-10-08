@@ -61,7 +61,7 @@
 </div>
 
 <div class="container">
-    <div class="MainClock">Loading</div>
+    <div class="MainClock"></div>
     <div class="MiniNav">
         <a href="<?php echo $siteurl; ?>" class="<?php echo (strpos($_SERVER['REQUEST_URI'], 'plan') !== false) ?  "" : "active" ; ?>">Track</a>
         <span class="divider">|</span>

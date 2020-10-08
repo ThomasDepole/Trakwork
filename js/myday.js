@@ -17,7 +17,9 @@ $(document).ready(function(){
     LoadSettings();
     LoadEstimates();
     RenderEstimates();
+    ClockTick();
 });
+
 
 /***************
  * Models 
@@ -916,12 +918,16 @@ var TimeCalc = new function TimeCalculator(){
     }
 }
 
-//Interval
-setInterval(function(){
+function ClockTick(){
     var time = getTimeValues(new Date(), true);
     var html = '<div class="time">' + time[0] + ':' + time[1] + time[3] +'</div><div class="sec">' + time[2] + '</div>';
-
+    
     $(MainClock).html(html);
+}
+
+//Interval
+setInterval(function(){
+    ClockTick();
 }, 1000);
 
 setInterval(function(){

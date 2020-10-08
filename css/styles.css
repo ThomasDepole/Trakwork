@@ -29,6 +29,8 @@ label {
 
 .MainClock {
   float: left;
+  width: 99px;
+  height: 28px;
 }
 
 .unselectable {
@@ -530,19 +532,21 @@ label {
   color: #ED9026;
 }
 
-/*
-.EstimateProgress.Notice .Progress{
-	background-color: rgb(255, 232, 189);
-}
-.EstimateProgress.Notice .EstimateLabel{
-	color: #FF7A00;
-}
-*/
 .ProgressBar .TimeRemaining {
   position: absolute;
   right: 10px;
   top: 14px;
   color: red;
+}
+
+#QuickTaskPicker {
+  margin: auto;
+  width: 527px;
+}
+
+#QuickTaskPicker h1 {
+  color: white;
+  font-size: 19px;
 }
 
 @media screen and (max-width: 600px) {
@@ -891,16 +895,6 @@ body.droppable {
   height: 120px;
   margin: 10px 0 0 0;
   padding: 5px 10px;
-}
-
-#PlannedTaskPicker {
-  margin: auto;
-  width: 527px;
-}
-
-#PlannedTaskPicker h1 {
-  color: white;
-  font-size: 19px;
 }
 
 .task.dropRegion {
