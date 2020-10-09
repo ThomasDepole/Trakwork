@@ -6,26 +6,45 @@ var ColorPicker = function(elm, strippedColors){
     //add the picker html
     elm.html('<div class="inputBoxLabel">Color</div><input type="text" name="colorPreview"><input type="hidden" name="color"><div class="options"></div>');
 
-    //need a better way to wait for the options to be loaded before referencing it
-    $(function(){
+    elm.delegate(".color-option", "click", function(){
+        var colorName = $(this).attr("data-colorName");
+        _colorPicker.setOption(colorName);
+    });
+
+    this.ShowStripedColors = function(){
+        elm.find(".options").html("");
+        // render colors
+        for(var i in TaskStyles){
+            //determine if we are displaying striped or non stripped colors
+            if(TaskStyles[i].isStriped == showStripe)
+                continue;
+
+            elm.find(".options").append(`<div class="color-option" data-colorName="${TaskStyles[i].name}" style="background: ${TaskStyles[i].color} ;"></div>`);
+        }
+    }
+
+    this.ShowSolidColors = function(){
+        elm.find(".options").html("");
         // render colors
         for(var i in TaskStyles){
             //determine if we are displaying striped or non stripped colors
             if(TaskStyles[i].isStriped != showStripe)
                 continue;
 
-            var option = $('<div class="color-option" data-colorName="'+TaskStyles[i].name+'" style="background: '+TaskStyles[i].color+' ;"></div>').appendTo(elm.find(".options"));
-            $(option).click(function(){
-                var colorName = $(this).attr("data-colorName");
-                _colorPicker.setOption(colorName);
-            });
+            elm.find(".options").append(`<div class="color-option" data-colorName="${TaskStyles[i].name}" style="background: ${TaskStyles[i].color} ;"></div>`);
         }
-    });
+    }
+    this.ShowSolidColors();
 
     this.setOption  = function(name){
         var style = $.grep(TaskStyles, function(e){ return e.name == name; })[0];
         elm.find('input[name="color"]').val(style.name)
         elm.find('input[name="colorPreview"]').css("background", style.color);
+    }
+
+    this.Reset = function(){
+        _colorPicker.setOption("green");
+        _colorPicker.ShowSolidColors();
     }
 
     this.showOptions = function(){

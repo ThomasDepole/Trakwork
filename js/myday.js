@@ -31,9 +31,11 @@ var Task = function(type, name, link_id, start_time, color, icon){
     this.start = start_time;
     this.end = null;
     this.link_id = link_id;
+    this.plannedTaskId = null;
     this.notes = null;
     this.color = color;
     this.icon = icon;
+    this.estimate = null;
 
     this.StartTime = function(){
         var date = new Date(this.start);
@@ -305,6 +307,9 @@ function LoadTasks(){
             Tasks[id].end = temp[i].end;
             Tasks[id].link_id = temp[i].link_id;
             Tasks[id].notes = temp[i].notes;
+            Tasks[id].plannedTaskId = temp[i].plannedTaskId;
+            Tasks[id].estimate = temp[i].estimate;
+            
             if(typeof temp[i].color == "undefined" )
                 Tasks[id].color = $.grep(TaskStyles, function(e){ return e.name == "silver" })[0];
             else
@@ -443,7 +448,7 @@ function CreatePickerType(type, label, icon, billable, can_nametask, nametasklab
 }
 
 //tasks
-function StartTask(type, name, startTime, color, icon){
+function StartTask(type, name, startTime, color, icon, estimate, linkId, plannedTaskId){
     if(typeof startTime == "undefined")
         startTime = Date.now();
     else
@@ -458,6 +463,24 @@ function StartTask(type, name, startTime, color, icon){
     var id = Tasks.push( new Task(type, name, null, startTime, color, icon));
     id = id - 1;
 
+    //set the linked task if the user is resuming a task
+    if (typeof linkId !== "undefined" && linkId != "" && linkId != null)
+        Tasks[id].link_id = linkId;
+    
+    //handle planned tasks
+    if (typeof plannedTaskId !== "undefined" && plannedTaskId != "" && plannedTaskId != null){
+        Tasks[id].plannedTaskId = plannedTaskId;
+
+        var plannedTask = GetPlannedTaskById(plannedTaskId);
+        plannedTask.estimate = estimate;
+        plannedTask.color = color;
+        UpdatePlannedTask(plannedTask);
+    }
+
+    //set estimate
+    if(typeof estimate !== "undefined" && estimate != null && estimate != "")
+        Tasks[id].estimate = estimate;
+    
     RenderTasks(".tasks");
     RenderDayProgress();
     SaveTasks();
@@ -479,7 +502,7 @@ function DeleteLastTask(){
     task = Tasks[lastIndex];
     Tasks.splice(lastIndex, 1);
 
-    //SaveTasks();
+    SaveTasks();
     RenderTasks(".Tasks");
     RenderDayProgress();
 
@@ -492,13 +515,13 @@ function DeleteLastTask(){
         //add in task
         Tasks.push(task);
 
-        //SaveTasks();
+        SaveTasks();
         RenderTasks(".Tasks");
         RenderDayProgress();
     });
 }
 
-//planned tasksh
+//planned tasks
 function CreatePlannedTask(name, color, icon, notes, deadline, date, estimate, priority){
     var plan = new PlannedTask();
     plan.id = guid();
@@ -549,6 +572,10 @@ function GetSortedPlannedTasks(date){
     if(typeof date === "undefined")
         date = new Date();
     //todo finish this logic
+}
+
+function GetPlannedTaskById(id){
+    return $.grep(PlannedTasks, function(e){ return e.id == id })[0];
 }
 
 //generic
@@ -832,7 +859,8 @@ function AlertUser(id, message, priority){
 
     if($.inArray( id, Alerts ) == -1){
         Alerts.push(id);
-        alert(message);
+        //alert(message);
+        console.log(message);
     }
 
 }

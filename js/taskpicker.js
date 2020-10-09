@@ -47,6 +47,8 @@ var TaskPicker = new function(){
     this.PrefillResumeTask = function(task_id){
         var type = Tasks[task_id].type;
         var name = Tasks[task_id].name;
+        var plannedId = (Tasks[task_id].plannedTaskId == null) ? "" : Tasks[task_id].plannedTaskId;
+        self.colorPicker.setOption(Tasks[task_id].color);
 
         self.HideQuickPicker();
 
@@ -56,7 +58,7 @@ var TaskPicker = new function(){
         self.elm.find('.type-options input[name="tasktype"]').val(type);
         self.elm.find(".type-options, .modal-footer").show();
         self.elm.find('input[name="resumeTaskID"]').val(task_id);
-
+        self.elm.find('input[name="plannedTaskID"]').val(plannedId);
     }
 
     this.PrefillPlannedTask = function(plannedTaskId){
@@ -64,12 +66,16 @@ var TaskPicker = new function(){
         self.HideQuickPicker();
 
         self.elm.find('input[name="name"]').val(task.name).removeClass("keypress-capture").hide();
-        self.elm.find(".type-selector, .estimate, .colorPicker, .iconPicker").hide();
+        self.elm.find(".type-selector").hide();
         self.elm.find(".type-options .typelabel").html(task.name);
         self.elm.find(".type-options, .modal-footer").show();
+        self.elm.find('.type-options input[name="tasktype"]').val("planned");
         self.elm.find('input[name="plannedTaskID"]').val(task.id);
 
         self.colorPicker.setOption(task.GetColor().name);
+        self.colorPicker.ShowStripedColors();
+        self.iconPicker.SelectIcon(task.icon);
+        self.estimate.setEstimate(task.estimate);
     }
 
     this.StartTask = function(){
@@ -80,15 +86,14 @@ var TaskPicker = new function(){
         var plannedID = self.elm.find('input[name="plannedTaskID"]').val();
         var icon = self.elm.find('input[name="icon"]').val();
 
-        var id = StartTask(type, name, $('#StartTaskModal input[name="startTimeValue"]').val(), color, icon);
-
-        SetEstimate(id, self.estimate.GetValue());
-
-        if (resumeID != "")
-            Tasks[id].link_id = resumeID;
-
-        if(plannedID != "")
-            Tasks[id].plannedTaskId = plannedID;
+        var id = StartTask(type, 
+                           name, 
+                           $('#StartTaskModal input[name="startTimeValue"]').val(), 
+                           color, 
+                           icon, 
+                           self.estimate.GetValue(),
+                           resumeID, 
+                           plannedID);
 
         $(".task.new .name").html("Change Task");
         $(".task.new").show();
@@ -98,6 +103,7 @@ var TaskPicker = new function(){
         RenderDayProgress();
         SaveTasks();
         SaveEstimates();
+
         self.Hide();
         return id;
     }
@@ -118,12 +124,12 @@ var TaskPicker = new function(){
 
     this.Reset = function(){
         if(Tasks.length == 0)
-            this.elm.find(".resumetask, .endDay-option").hide();
+            self.elm.find(".resumetask, .endDay-option").hide();
         else if(Tasks.length == 1){
-            this.elm.find(".endDay-option").show();
-            this.elm.find(".resumetask").hide();
+            self.elm.find(".endDay-option").show();
+            self.elm.find(".resumetask").hide();
         }else{
-            this.elm.find(".resumetask, .endDay-option").show();
+            self.elm.find(".resumetask, .endDay-option").show();
         }
 
         self.elm.find(".estimate, .colorPicker, iconPicker").show();
@@ -134,8 +140,8 @@ var TaskPicker = new function(){
         self.elm.find('input[name="plannedTaskID"]').val("");
         self.elm.find("[name=name]").addClass("has-default-value");
         self.estimate.Reset();
-        var currentDateTime = new Date();
-        self.startTimePicker.setStartTime(currentDateTime);
+        self.colorPicker.Reset();
+        self.startTimePicker.setStartTime(new Date());
 
         _taskpicker.RenderQuickOptions();
     }
@@ -154,6 +160,12 @@ var TaskPicker = new function(){
         PlannedTasks.forEach(task =>{
             if(!TimeCalc.DatesAreOnSameDay(new Date, task.date))
                 return;
+
+            //check if this planned task has already been started
+            for(var i = 0; i<Tasks.length; i++){
+                if(Tasks[i].plannedTaskId == task.id)
+                    return;
+            }
 
             self.elm.find("#PlannedTaskPicker .task-list")
                     .append(`<div class="task quickTaskOption" data-type="planned" data-id="${task.id}" style="background: ${task.GetColor().color} ; color: ${task.GetColor().fontcolor} ;">
