@@ -309,7 +309,7 @@ function LoadTasks(){
             Tasks[id].notes = temp[i].notes;
             Tasks[id].plannedTaskId = temp[i].plannedTaskId;
             Tasks[id].estimate = temp[i].estimate;
-            
+
             if(typeof temp[i].color == "undefined" )
                 Tasks[id].color = $.grep(TaskStyles, function(e){ return e.name == "silver" })[0];
             else
@@ -475,6 +475,8 @@ function StartTask(type, name, startTime, color, icon, estimate, linkId, planned
         plannedTask.estimate = estimate;
         plannedTask.color = color;
         UpdatePlannedTask(plannedTask);
+
+        Tasks[id].notes = plannedTask.notes;
     }
 
     //set estimate
@@ -620,6 +622,8 @@ function RenderTasks(selector){
 function RenderDayProgress(){
     $(".DayProgress").html("");
     var maxhour = parseInt(GetSetting("DayLength"));
+    var remainingWidth = 100;
+    var plannedTimeOverflow = false;
 
     if(Tasks != null){
         var allprogress = null;
@@ -685,18 +689,67 @@ function RenderDayProgress(){
 
             }
 
+            remainingWidth -= width;
             $(".DayProgress").append('<div data-task_id="'+ i +'"   class="type-'+ Tasks[i].type+ ' '+taskstate+'"  style="width: '+width+'%; '+style+'"></div>');
+        }
+        
+        //build out the list of tasks used to render the progress bar
+        var pptasks = [];
+        PlannedTasks.forEach(task =>{
+            if(!TimeCalc.DatesAreOnSameDay(task.date, new Date()))
+            return;
+            pptasks.push(task);
+        });
+        //put active task to the top of the list 
+        if(Tasks.length > 0){
+            var activeTask = Tasks[Tasks.length - 1];
+            if(activeTask.plannedTaskId != null){
+                for(var i = 0; pptasks.length > i; i++){
+                    if(pptasks[i].id == activeTask.plannedTaskId){
+                        var item = pptasks.splice(i, 1)[0];
+                        pptasks.splice(0, 0, item);
+                    }
+                }
+            }
         }
         
         //show planned tasks
         var plannedTaskTime = 0;
-        PlannedTasks.forEach(task => {
-            if(!TimeCalc.DatesAreOnSameDay(task.date, new Date()))
+        pptasks.forEach(task => {
+            //check if we have time left in the progress bar 
+            if(remainingWidth <= 0)
                 return;
 
-            plannedTaskTime += task.estimate;
+            //calculate all the time worked against this task
+            var workedTime = 0;
+            Tasks.forEach(t =>{
+                if(t.plannedTaskId != task.id)
+                    return;
 
-            var plannedWidth = ((task.estimate * 60) / maxhour) * 100;
+                var start = new Date(t.start);
+                var end = (t.end == null) ? new Date() : new Date(t.end);
+                var diff = TimeCalc.Diff_InSeconds(start,end);
+                workedTime += diff/60/60;
+            });
+
+            //determine the time remaining on the planned task
+            var remainingTaskTime = task.estimate - workedTime;
+
+            //check if we worked more than the estimate 
+            if(remainingTaskTime <= 0)
+                return;
+            plannedTaskTime += remainingTaskTime;
+
+            //determine the width
+            var plannedWidth = ((remainingTaskTime * 60) / maxhour) * 100;
+
+            //check to make sure we still have enough time
+            if(plannedWidth > remainingWidth){
+                plannedWidth = remainingWidth;
+                plannedTimeOverflow = true;
+            }
+
+            remainingWidth -= plannedWidth;
             $(".DayProgress").append(`<div class="plannedTaskTime" style="width: ${plannedWidth}%; background: ${task.GetColor().color}"></div>`);
         });
 

@@ -90,7 +90,6 @@ var DayPlanner = function(date){
         self.html.progressBar.html("");
         self.tasks().forEach(task => {
             var mins = task.estimate * 60;
-
             if(mins > minsRemaining){
                 mins = minsRemaining;
                 self.html.msg.append(`<div class="error">You have more tasks than you can complete.</div>`);
