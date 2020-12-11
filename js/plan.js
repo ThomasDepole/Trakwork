@@ -21,6 +21,7 @@ var DayPlanner = function(date){
         });
 
         tasks = tasks.sort((a, b) => (a.estimate > b.estimate) ? 1 : -1)
+        tasks = tasks.sort((a, b) => (a.completed) ? 1 : -1)
 
         return tasks;
     }
@@ -32,7 +33,8 @@ var DayPlanner = function(date){
 
         //add task to the page
         self.tasks().forEach(task => {
-            self.html.tasks.append(`<div class="task type-generaltask" data-id="${task.id}" style="background: ${task.GetColor().color} ; color: ${task.GetColor().fontcolor} ;">
+            var completed = (task.completed) ? "completed" : "";
+            self.html.tasks.append(`<div class="task type-generaltask ${completed} " data-id="${task.id}" style="background: ${task.GetColor().color} ; color: ${task.GetColor().fontcolor} ;">
                                         <div class="icon"><i class="fa ${task.icon}"></i></div>
                                         <div class="name">${task.name}</div>
                                     </div>`)
@@ -58,7 +60,7 @@ var DayPlanner = function(date){
                 snapMode: "inner",
                 zIndex: 500,
                 scroll: true,
-                scrollSensitivity: 200,
+                scrollSensitivity: 50,
                 start: function( event, ui ) {
                     $(this).addClass("noclick");
                     $("body, .day").addClass("droppable");
@@ -67,11 +69,11 @@ var DayPlanner = function(date){
                     $("body, .day").removeClass("droppable");
                     
                     AllPlanners.forEach(planner =>{
-                        var startY = planner.container.offset().top;
-                        var endY = startY + planner.container.height();
+                        var startX = planner.container.offset().left;
+                        var endX = startX + planner.container.width();
 
-                        var taskY = $(this).offset().top;
-                        if(taskY > startY && taskY < endY){
+                        var taskX = $(this).offset().left;
+                        if(taskX > startX && taskX < endX){
                             var id = $(this).attr("data-id");
                             var task = $.grep(PlannedTasks, function(e){ return e.id == id })[0];
 
@@ -89,10 +91,13 @@ var DayPlanner = function(date){
         //render progress bar
         self.html.progressBar.html("");
         self.tasks().forEach(task => {
+            if(task.completed)
+                return;
+
             var mins = task.estimate * 60;
             if(mins > minsRemaining){
                 mins = minsRemaining;
-                self.html.msg.append(`<div class="error">You have more tasks than you can complete.</div>`);
+                self.html.msg.html(`<div class="error">More than 8 hours of tasks</div>`);
             }
 
             var percentage = (mins / minsInDay) * 100;
@@ -106,6 +111,21 @@ var DayPlanner = function(date){
 
         //render time remaining
         self.html.progressBar.append(`<div class="TimeRemaining">${TimeCalc.TimeLabel_FromMins(minsRemaining)}</div>`);
+
+        //update the color summary 
+        var sumItems = "";
+        var ptg = groupBy(PlannedTasks, t => t.color);
+        ptg.forEach(group =>{
+            var color = GetTaskStyle(group[0].color);
+            var hours = 0;
+            group.forEach(task => { hours += task.estimate });
+
+            sumItems += `<div class="item">
+                            <div class="color" style="background:${color.color}"></div>
+                            <div class="hours">${hours}</div>
+                        </div>`;
+        });
+        $("#ColorSummary").html(sumItems);
     }
     this.render();
 
@@ -119,7 +139,7 @@ var DayPlanner = function(date){
     if(TimeCalc.DatesAreOnSameDay(new Date(), date))
         self.html.dayLabel.html("Today")
     else{
-        self.html.dayLabel.html(moment(date).format('dddd'));
+        self.html.dayLabel.html(moment(date).format('dddd DD'));
     }
 
     //keyboard events
@@ -134,13 +154,8 @@ var DayPlanner = function(date){
     AllPlanners.push(self);
 }
 
-$(".plannedTasks [data-task_id]").click(function(){
-    var id = $(this).attr("data-task_id");
-    TaskDetails.OpenTask(id);
-});
-
 $(function(){
-    for(var i = 0; i < 7; i++){
+    for(var i = 0; i < 12; i++){
         var date = new Date();
         date.setDate(date.getDate() + i);
         new DayPlanner(date);

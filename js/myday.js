@@ -12,8 +12,8 @@ var icons; //loaded in index TODO find a better way to load these
 
 
 $(document).ready(function(){
-    LoadTasks();
     LoadPlannedTasks();
+    LoadTasks();
     LoadSettings();
     LoadEstimates();
     RenderEstimates();
@@ -84,6 +84,7 @@ var PlannedTask = function(){
     this.createdDate;
     this.estimate;
     this.pastDue = false;
+    this.completed = false;
 
     this.GetColor = function(){
         return $.grep(TaskStyles, function(e){ return e.name == self.color })[0];
@@ -272,6 +273,36 @@ function guid()
     return s4() + s4() + '-' + s4() + '-' + "4" + s4().substr(1) + '-' + s4() + '-' + s4() + s4() + s4();
 } 
 
+//https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects
+/* example usage
+const pets = [
+    {type:"Dog", name:"Spot"},
+    {type:"Cat", name:"Tiger"},
+    {type:"Dog", name:"Rover"}, 
+    {type:"Cat", name:"Leo"}
+];
+    
+const grouped = groupBy(pets, pet => pet.type);
+*/
+//export function groupBy<K, V>(list: Array<V>, keyGetter: (input: V) => K): Map<K, Array<V>> {
+//    const map = new Map<K, Array<V>>();
+function groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+         const key = keyGetter(item);
+         const collection = map.get(key);
+         if (!collection) {
+             map.set(key, [item]);
+         } else {
+             collection.push(item);
+         }
+    });
+    return map;
+}
+
+
+
+
 /************************
  *  Saving and Loading 
  ************************/
@@ -357,7 +388,7 @@ function LoadPlannedTasks(){
             task.deadline = new Date(task.deadline);
 
         //move older planned tasks to today. 
-        if(task.date < today)
+        if(task.date < today && !task.completed)
             task.date = today;
 
         PlannedTasks.push(task);
@@ -580,6 +611,11 @@ function GetPlannedTaskById(id){
     return $.grep(PlannedTasks, function(e){ return e.id == id })[0];
 }
 
+//colors - GetTaskStyle
+function GetTaskStyle(name){
+    return  $.grep(TaskStyles, function(e){ return e.name == name })[0];
+}
+
 //generic
 function ClearDay(){
     Tasks = new Array();
@@ -608,8 +644,20 @@ function RenderTasks(selector){
             icon =  Tasks[t.link_id].icon;
         }
 
+        //check if planned task is completed
+        var completed = "";
+        if(t.plannedTaskId != null){
+            var p = GetPlannedTaskById(t.plannedTaskId);
+            if(p.completed)
+                completed = "completed";
+        }
 
-        var div = '<div class="task type-'+ t.type+'" data-task_id="'+ i +'" style="background: '+ t.GetColor().color +' ; color: '+ t.GetColor().fontcolor +' ;" ><div class="icon"><i class="fa '+ icon +'"></i></div><div class="name">'+ t.name +'</div></div>';
+        var div = `<div class="task type-${t.type} ${completed}"
+                        data-task_id="${i}" 
+                        style="background: ${t.GetColor().color} ; color: ${t.GetColor().fontcolor} ;" >
+                            <div class="icon"><i class="fa ${icon}"></i></div>
+                            <div class="name">${t.name}</div>
+                    </div>`;
         $(selector).append(div);
     }
 
@@ -749,8 +797,16 @@ function RenderDayProgress(){
                 plannedTimeOverflow = true;
             }
 
+            //see if the active task is this planned task
+            var activeTask = Tasks[Tasks.length - 1];
+            var activeClass = "";
+            if(activeTask.plannedTaskId != null){
+                if(activeTask.plannedTaskId == task.id)
+                    activeClass = "active";
+            }
+
             remainingWidth -= plannedWidth;
-            $(".DayProgress").append(`<div class="plannedTaskTime" style="width: ${plannedWidth}%; background: ${task.GetColor().color}"></div>`);
+            $(".DayProgress").append(`<div class="plannedTaskTime ${activeClass}" style="width: ${plannedWidth}%; background: ${task.GetColor().color}"></div>`);
         });
 
         if(Tasks.length != 0){
@@ -840,8 +896,6 @@ function RenderDayReport(){
             linkedtaskshtml = "";
             linkedCount = 1;
         }
-
-
     }
 
     html += '</tbody></table>';
@@ -902,6 +956,16 @@ function RenderEstimates(){
 
         }
     }
+}
+
+//work in progress
+function RenderTaskTimeStatus(estimate, logged){
+    var estimateTxt = estimate + " hours";
+
+    var html = `<div class="time-status">
+                    <span>${estimateTxt}</span>
+                    <div class=""></div>
+                </div>"`
 }
 
 /***************

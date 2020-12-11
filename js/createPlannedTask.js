@@ -3,6 +3,8 @@ var CreatePlannedTaskModal = new function(){
     this.elm = $("#CreatePlannedTaskModal");
     this.nameField = this.elm.find("[name=name]");
     this.notesField = this.elm.find("[name=notes]");
+    this.completeBtn = this.elm.find(".completeTask");
+    this.reopenBtn = this.elm.find(".reopenTask");
     this.target = this.elm[0];
     this.isOpen = false;
     this.day = null;
@@ -56,6 +58,8 @@ var CreatePlannedTaskModal = new function(){
         self.startTimePicker.clearDate();
         self.colorPicker.setOption("stripe-green");
         self.iconPicker.SelectIcon("fa-file-o");
+        self.reopenBtn.hide();
+        self.completeBtn.show();
     }
 
     this.Hide = function(){
@@ -89,6 +93,10 @@ var CreatePlannedTaskModal = new function(){
         self.estimate.setEstimate(task.estimate);
         if(task.deadline != "")
             self.startTimePicker.setStartTime(task.deadline);
+        if(task.completed){
+            self.completeBtn.hide();
+            self.reopenBtn.show();
+        }
         
         self.estimate.GetValue();
     }
@@ -101,6 +109,28 @@ var CreatePlannedTaskModal = new function(){
             AllPlanners[i].render();
     }
 
+    this.completeTask = function(){
+        if(self.task != null){
+            self.task.completed = true;
+            UpdatePlannedTask(self.task);
+        }
+
+        self.Hide();
+        self.day.render();
+        self.task = null;
+    }
+
+    this.reopenTask = function(){
+        if(self.task != null){
+            self.task.completed = false;
+            UpdatePlannedTask(self.task);
+        }
+
+        self.Hide();
+        self.day.render();
+        self.task = null;
+    }
+
     //focus events
     self.elm.on('shown.bs.modal', function () {
         CreatePlannedTaskModal.isOpen = true;
@@ -110,6 +140,9 @@ var CreatePlannedTaskModal = new function(){
     self.elm.on('hidden.bs.modal', function () {
         CreatePlannedTaskModal.isOpen = false;
     });
+
+    self.completeBtn.click(self.completeTask);
+    self.reopenBtn.click(self.reopenTask);
 
     //keyboard events
     new TaskEditorKeyboardEvents(this.elm,this.SaveTask,this.nameField,this.notesField, this.estimate, this.startTimePicker, this.colorPicker);

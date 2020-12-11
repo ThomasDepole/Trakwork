@@ -49,6 +49,7 @@ var TaskPicker = new function(){
         var name = Tasks[task_id].name;
         var plannedId = (Tasks[task_id].plannedTaskId == null) ? "" : Tasks[task_id].plannedTaskId;
         self.colorPicker.setOption(Tasks[task_id].color);
+        self.estimate.setEstimate(Tasks[task_id].estimate);
 
         self.HideQuickPicker();
 
@@ -162,14 +163,19 @@ var TaskPicker = new function(){
                 return;
 
             //check if this planned task has already been started
+            /*
             for(var i = 0; i<Tasks.length; i++){
                 if(Tasks[i].plannedTaskId == task.id)
                     return;
             }
+            */
 
             self.elm.find("#PlannedTaskPicker .task-list")
-                    .append(`<div class="task quickTaskOption" data-type="planned" data-id="${task.id}" style="background: ${task.GetColor().color} ; color: ${task.GetColor().fontcolor} ;">
-                                <div class="icon"><i class="fa ${task.icon}"></i></div>
+                    .append(`<div class="task quickTaskOption" data-type="planned" data-id="${task.id}" color: ${task.GetColor().fontcolor} ;">
+                                <input class="completed" type="checkbox" ${(task.completed ? "checked=checked" : "")} name="taskCompleted" value="${task.id}" />
+                                <div class="backdrop ${(task.completed ? "completed" : "")}" style="background: ${task.GetColor().color} ;">
+                                    <div class="icon"><i class="fa ${task.icon}"></i></div>
+                                </div>
                                 <div class="name">${task.name}</div>
                             </div>`);
         });
@@ -204,7 +210,18 @@ var TaskPicker = new function(){
     }
 
     //bind click events for quick options
-    this.elm.delegate(".quickTaskOption", "click", function(){
+    this.elm.delegate("#PlannedTaskPicker .completed", "click", function(e){
+        var id = $(e.target).val();
+        var task = GetPlannedTaskById(id);
+        task.completed = $(e.target).is(':checked');
+        UpdatePlannedTask(task);
+        self.RenderQuickOptions();
+    });
+
+    this.elm.delegate(".quickTaskOption", "click", function(e){
+        if($(e.target).hasClass("completed"))
+            return;
+
         var type = $(this).attr("data-type");
         TaskPicker.HideQuickPicker();
     

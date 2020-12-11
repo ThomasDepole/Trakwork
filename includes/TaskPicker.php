@@ -65,13 +65,13 @@
 				</div>
 			</div>
 
-			<div id="PlannedTaskPicker">
-				<h1>Planned Tasks</h1>
-				<div class="task-list"></div>
-			</div>
-
 			<div id="ResumeTaskOptions">
 				<h1>Resume a Task</h1>
+				<div class="task-list"></div>
+			</div>
+			
+			<div id="PlannedTaskPicker">
+				<h1>Planned Tasks</h1>
 				<div class="task-list"></div>
 			</div>
 		</div>

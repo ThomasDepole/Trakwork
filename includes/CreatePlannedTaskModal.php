@@ -31,6 +31,9 @@
 			</div>
 			<div class="modal-footer" >
 				<button type="button" class="btn btn-danger deletePlannedTask" data-dismiss="modal" style="float:left">Delete</button>
+				
+				<button type="button" class="btn btn-default completeTask" data-dismiss="modal">Complete Task</button>
+				<button type="button" class="btn btn-default reopenTask" data-dismiss="modal">Reopen Task</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-primary go">Go</button>
 			</div>

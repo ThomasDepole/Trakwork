@@ -29,7 +29,7 @@ label {
 
 .MainClock {
   float: left;
-  width: 99px;
+  width: 102px;
   height: 28px;
 }
 
@@ -176,6 +176,10 @@ label {
   opacity: .15;
 }
 
+.ProgressBar .plannedTaskTime.active {
+  opacity: .65;
+}
+
 .ProgressBar .plannedTaskTime,
 .ProgressBar [data-id],
 .ProgressBar [data-task_id] {
@@ -233,6 +237,10 @@ label {
   text-align: center;
   vertical-align: top;
   cursor: pointer;
+}
+
+.task.completed {
+  opacity: .4;
 }
 
 .task.blur,
@@ -807,6 +815,11 @@ body.droppable {
   background: #00000047;
 }
 
+.header {
+  z-index: 100;
+  position: relative;
+}
+
 .MiniNav {
   text-align: center;
   position: absolute;
@@ -833,20 +846,38 @@ body.droppable {
 }
 
 #Planner {
-  margin-top: 24px;
+  padding: 38px 0px 0px 5px;
+  overflow-x: auto;
+  overflow-y: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 #Planner .day {
   margin-bottom: 90px;
   position: relative;
   background: white;
-  border-radius: 8px;
   padding: 20px 10px 33px 10px;
+  width: 220px;
+  display: inline-block;
+  vertical-align: top;
+  border-right: 1px solid #efefef;
+  margin-right: 3px;
+  height: 100%;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
 }
 
 #Planner .day.droppable {
-  -webkit-box-shadow: 0px 0px 21px 0px #5e5e5e;
-  box-shadow: 0px 0px 21px 0px #5e5e5e;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-right: none;
 }
 
 #Planner .day .dayLabel {
@@ -857,6 +888,47 @@ body.droppable {
 
 #Planner .day .plannedTasks {
   margin-top: 5px;
+}
+
+#Planner .day .plannedTasks .task {
+  width: 100%;
+  height: 62px;
+  position: relative;
+}
+
+#Planner .day .plannedTasks .task .name {
+  text-align: left;
+  padding-left: 43px;
+  position: relative;
+  top: 20px;
+}
+
+#Planner .day .plannedTasks .task .icon {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+}
+
+#Planner .day .plannedTasks .task .icon i {
+  font-size: 27px;
+}
+
+#Planner .day .plannedTasks .task.completed {
+  opacity: .3;
+  height: 35px;
+}
+
+#Planner .day .plannedTasks .task.completed .name {
+  top: 8px;
+}
+
+#Planner .day .plannedTasks .task.completed .icon {
+  top: -2px;
+  left: 13px;
+}
+
+#Planner .day .plannedTasks .task.completed .icon i {
+  font-size: 20px;
 }
 
 #Planner .day .plannedTasks .addTask {
@@ -884,10 +956,16 @@ body.droppable {
 
 #Planner .day .ProgressBar {
   margin-top: 21px;
+  height: 27px;
 }
 
 #Planner .day .ProgressBar .TimeRemaining {
   color: gray;
+  top: 3px;
+}
+
+#TaskList {
+  display: none;
 }
 
 #CreatePlannedTaskModal #notes {
@@ -909,5 +987,85 @@ body.droppable {
   font-size: 15px;
   font-weight: bold;
   margin-top: 36px;
+}
+
+#ColorSummary {
+  position: fixed;
+  left: 50%;
+  bottom: 23px;
+  min-width: 24px;
+  background: #ececec;
+  border-radius: 7px;
+  border: 1px solid #b9b9b9;
+  padding: 6px;
+  padding-bottom: 0px;
+  -webkit-transform: translate(-50%, 0%);
+          transform: translate(-50%, 0%);
+}
+
+#ColorSummary .item {
+  display: inline-block;
+  margin-right: 9px;
+}
+
+#ColorSummary .item .color {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+#ColorSummary .item .hours {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#PlannedTaskPicker .task-list .task {
+  width: 100%;
+  text-align: left;
+  height: 49px;
+  position: relative;
+  overflow: hidden;
+  padding-left: 4px;
+}
+
+#PlannedTaskPicker .task-list .task .icon {
+  display: inline-block;
+  font-size: 28px;
+}
+
+#PlannedTaskPicker .task-list .task .icon i {
+  font-size: 32px;
+  margin-top: 0px;
+}
+
+#PlannedTaskPicker .task-list .task .name {
+  display: inline-block;
+  position: relative;
+  bottom: 5px;
+  font-size: 17px;
+  overflow: visible;
+  margin-left: 4px;
+  color: white;
+}
+
+#PlannedTaskPicker .task-list .task .backdrop {
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  border-radius: 8px;
+}
+
+#PlannedTaskPicker .task-list .task .backdrop.completed {
+  opacity: .5;
+}
+
+#PlannedTaskPicker .task-list .task input[type=checkbox].completed {
+  margin: 0 5px 0 0;
+  width: 15px;
+  height: 16px;
+  position: relative;
+  bottom: 2px;
+  cursor: pointer;
 }
 /*# sourceMappingURL=styles.css.map */

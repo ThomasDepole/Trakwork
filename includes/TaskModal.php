@@ -27,7 +27,9 @@
 			</div>
 			<div class="modal-footer">
                 <button type="button" class="btn btn-danger deleteTask" data-dismiss="modal" style="float:left">Delete</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default completeTask" data-dismiss="modal">Complete Task</button>
+				<button type="button" class="btn btn-default reopenTask" data-dismiss="modal">Reopen Task</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-primary saveTask">Save</button>
 			</div>
 		</div>
@@ -39,57 +41,72 @@
 
 <script>
     var TaskDetails = new function(){
+        var self = this;
         var _taskDetails = this;
+
         this.elm = $("#TaskModal");
+        this.completeBtn = this.elm.find(".completeTask");
+        this.reopenBtn = this.elm.find(".reopenTask");
         this.colorPicker = new ColorPicker( this.elm.find(".colorPicker") );
         this.estimate = new EstimatePicker( this.elm.find(".estimatePicker") );
         this.iconPicker = new IconPicker ( this.elm.find(".iconsPicker") );
 
         this.OpenTask = function(id){
-            $("#TaskModal .starttime").html("Started: " + Tasks[id].StartTime());
+            var task = Tasks[id];
+
+            //hide task buttons
+            self.completeBtn.hide();
+            self.reopenBtn.hide();
+
+            $("#TaskModal .starttime").html("Started: " + task.StartTime());
             $("#TaskModal input[name=taskid]").val(id);
-            if(Tasks[id].end > 0){
-                $("#TaskModal .endtime").html("Ended: " + Tasks[id].EndTime());
-                var TimeSpent = GetHoursDifference(Tasks[id].end, Tasks[id].start);
+            if(task.end > 0){
+                $("#TaskModal .endtime").html("Ended: " + task.EndTime());
+                var TimeSpent = GetHoursDifference(task.end, task.start);
                 $("#TaskModal .timespent").html(TimeSpent);
             }else{
                 $("#TaskModal .endtime").html("now");
-                var TimeSpent = GetHoursDifference(new Date(), Tasks[id].start);
+                var TimeSpent = GetHoursDifference(new Date(), task.start);
                 $("#TaskModal .timespent").html(TimeSpent);
             }
 
             // check if task is a resumed task, and change the id to the parent task for the rest of the operations of this modal
-            var link_id = Tasks[id].link_id;
+            var link_id = task.link_id;
             if(link_id != null){
-                id = link_id;
+                task = Tasks[link_id];
             }
 
+            //update options
             $("#TaskModal #taskid").val(id);
-            $("#TaskModal #taskname").val(Tasks[id].name);
-            $("#TaskModal #notes").val(Tasks[id].notes);
+            $("#TaskModal #taskname").val(task.name);
+            $("#TaskModal #notes").val(task.notes);
             $('#TaskModal #tasktype').html("");
+            self.colorPicker.setOption(task.GetColor().name);
+            self.elm.find(".saveTask").addClass("keypress-enter")
+            self.iconPicker.SelectIcon(task.icon);
+
+            //select type
             for(var i in TaskPickerTypes){
                 var selected = null;
-                if(TaskPickerTypes[i].type == Tasks[id].type) selected = "selected";
+                if(TaskPickerTypes[i].type == task.type) selected = "selected";
 
                 $('#TaskModal #tasktype').append('<option value="'+ TaskPickerTypes[i].type +'" '+selected+' >'+ TaskPickerTypes[i].label +'</option>')
             }
 
-            var estiamte = $.grep(Estimates, function(e){ return e.task_id == id; })[0];
-            if(typeof estiamte != "undefined")
-                TaskDetails.estimate.setEstimate(estiamte.hours);
-            else
-                TaskDetails.estimate.Reset();
-
-
-            TaskDetails.Show(Tasks[id]);
-        }
-
-        this.Show = function(task){
-            this.colorPicker.setOption(task.GetColor().name);
-            this.elm.find(".saveTask").addClass("keypress-enter")
-            this.iconPicker.SelectIcon(task.icon);
-            this.elm.modal();
+            //grab the estimate
+            if(typeof task.estimate === "number" && task.estimate > 0)
+                self.estimate.setEstimate(task.estimate);
+        
+            //handle planned tasks
+            if(task.plannedTaskId != null){
+                var ptask = GetPlannedTaskById(task.plannedTaskId);
+                if(ptask.completed)
+                    self.reopenBtn.show();
+                else
+                    self.completeBtn.show();
+            }  
+            
+            self.elm.modal();
         }
 
         this.Hide = function(){

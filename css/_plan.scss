@@ -2,6 +2,11 @@ body.droppable{
     background: #00000047;
 }
 
+.header{
+    z-index: 100;
+    position: relative;
+}
+
 .MiniNav {
     text-align: center;
     position: absolute;
@@ -27,19 +32,39 @@ body.droppable{
 }
 
 #Planner{
-    margin-top: 24px;
+    padding: 38px 0px 0px 5px;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+
 
     .day{
         margin-bottom: 90px;
         position: relative;
         background: white;
-        border-radius: 8px;
         padding: 20px 10px 33px 10px;
+        width: 220px;
+        display: inline-block;
+        vertical-align: top;
+        border-right: 1px solid #efefef;
+        margin-right: 3px;
+        height: 100%;
+        flex-shrink: 0;
+
 
         &.droppable{
-            -webkit-box-shadow: 0px 0px 21px 0px rgba(94,94,94,1);
-            -moz-box-shadow: 0px 0px 21px 0px rgba(94,94,94,1);
-            box-shadow: 0px 0px 21px 0px rgba(94,94,94,1);
+            //-webkit-box-shadow: 0px 0px 21px 0px rgba(94,94,94,1);
+            //-moz-box-shadow: 0px 0px 21px 0px rgba(94,94,94,1);
+            //box-shadow: 0px 0px 21px 0px rgba(94,94,94,1);
+            border-top-right-radius: 8px;
+            border-top-left-radius: 8px;
+            border-right: none;
+            
         }
     
 
@@ -51,6 +76,46 @@ body.droppable{
     
         .plannedTasks{
             margin-top:5px;
+            
+            .task {
+                width: 100%;
+                height: 62px;
+                position: relative;
+
+                .name{
+                    text-align: left;
+                    padding-left: 43px;
+                    position: relative;
+                    top: 20px;
+                }
+
+                .icon {
+                    position: absolute;
+                    top: 6px;
+                    left: 10px;
+                    i{
+                        font-size: 27px;
+                    }
+                }
+
+                &.completed{
+                    opacity: .3;
+                    height: 35px;
+
+                    .name{
+                        top: 8px;
+                    }
+
+                    .icon{
+                        top: -2px;
+                        left: 13px;
+                        i{
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }
+
     
             .addTask {
                 background: #f5f5f5;
@@ -79,14 +144,18 @@ body.droppable{
     
         .ProgressBar{
             margin-top: 21px;
+            height: 27px;
     
             .TimeRemaining{
                 color: gray;
+                top: 3px;
             }
         }
-
-        
     }
+}
+
+#TaskList{
+    display: none;
 }
 
 #CreatePlannedTaskModal{
@@ -111,5 +180,87 @@ body.droppable{
         font-size: 15px;
         font-weight: bold;
         margin-top: 36px;
+    }
+}
+
+#ColorSummary {
+    position: fixed;
+    left: 50%;
+    bottom: 23px;
+    min-width: 24px;
+    background: #ececec;
+    border-radius: 7px;
+    border: 1px solid #b9b9b9;
+    padding: 6px;
+    padding-bottom: 0px;
+    transform: translate(-50%, 0%);
+
+    .item {
+        display: inline-block;
+        margin-right: 9px;
+
+        .color {
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .hours {
+            display: inline-block;
+            vertical-align: top;
+        }
+    }
+}
+
+#PlannedTaskPicker{
+    .task-list{
+        .task{
+            width: 100%;
+            text-align: left;
+            height: 49px;
+            position: relative;
+            overflow: hidden;
+            padding-left: 4px;
+            
+            .icon{
+                display: inline-block; 
+                font-size: 28px;
+
+                i{
+                    font-size: 32px;
+                    margin-top: 0px;
+                }
+            }
+            
+            .name{
+                display: inline-block;
+                position: relative;
+                bottom: 5px;
+                font-size: 17px;
+                overflow: visible;
+                margin-left: 4px;
+                color: white;
+            }
+
+            .backdrop{
+                display: inline-block;
+                padding: 8px;
+                color: white;
+                border-radius: 8px;
+
+                &.completed{
+                    opacity: .5;
+                }
+            }
+
+            input[type=checkbox].completed{
+                margin: 0 5px 0 0;
+                width: 15px;
+                height: 16px;
+                position: relative;
+                bottom: 2px;
+                cursor: pointer;
+            }
+        }
     }
 }
