@@ -20,6 +20,7 @@
 
                     <div class="estimate"></div>
                     <div class="startTime"></div>
+					<div class="deadlinePicker"></div>
                     <div class="colorPicker"></div>
                     <div class="iconPicker"></div>
 

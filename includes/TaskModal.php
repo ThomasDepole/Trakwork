@@ -146,10 +146,6 @@
         new TaskEditorKeyboardEvents(this.elm,this.SaveTask,this.elm.find('input[name=name]'), $("#TaskModal #notes"), this.estimate, null, this.colorPicker);
     }
 
-    $(function(){
-        $(".tasks .task").click(function(){  }) ;
-    });
-
     $("body").delegate("#TaskModal .saveTask", "click", function(){
         TaskDetails.SaveTask();
     });

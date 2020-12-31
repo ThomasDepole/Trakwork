@@ -150,12 +150,18 @@ label {
   color: #d58000;
 }
 
+.sync-btn,
 .settings {
   font-size: 22px !important;
   color: #DADADA;
   position: relative;
   top: 9px;
   cursor: pointer;
+  margin-left: 9px;
+}
+
+.sync-btn {
+  color: #5d9cb1;
 }
 
 .DayProgress {
@@ -166,8 +172,12 @@ label {
   height: 50px;
   border: 1px solid #E0E0E0;
   border-radius: 4px;
-  overflow: hidden;
   position: relative;
+}
+
+.ProgressBar > div:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
 
 .ProgressBar .plannedTaskTime {
@@ -178,6 +188,35 @@ label {
 
 .ProgressBar .plannedTaskTime.active {
   opacity: .65;
+}
+
+.ProgressBar .event {
+  position: absolute;
+  height: 50%;
+  background: red;
+  bottom: 55px;
+  border-radius: 4px;
+}
+
+.ProgressBar .event .start {
+  display: none;
+  position: absolute;
+  left: -78px;
+  width: 75px;
+  text-align: right;
+  top: 2px;
+}
+
+.ProgressBar .event .end {
+  display: none;
+  position: absolute;
+  right: -78px;
+  width: 75px;
+  top: 2px;
+}
+
+.ProgressBar .event:hover .start, .ProgressBar .event:hover .end {
+  display: block;
 }
 
 .ProgressBar .plannedTaskTime,
@@ -452,6 +491,10 @@ label {
   vertical-align: top;
 }
 
+.deadlinePicker input {
+  width: 71px;
+}
+
 #CreatePlannedTaskModal .typeLabel + input,
 #starttaskmodal .typeLabel + input {
   width: 160px;
@@ -555,6 +598,116 @@ label {
 #QuickTaskPicker h1 {
   color: white;
   font-size: 19px;
+}
+
+#TimePicker {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000d4;
+  z-index: 1200;
+}
+
+#TimePicker .exit {
+  color: white;
+  font-size: 23px;
+  position: absolute;
+  right: 20%;
+  top: 30px;
+  cursor: pointer;
+}
+
+#TimePicker .selectedTime {
+  color: white;
+  text-align: center;
+  font-size: 70px;
+  margin-top: 100px;
+}
+
+#TimePicker .selectBtn {
+  width: 147px;
+  background: #2dbb2d;
+  color: white;
+  margin: auto;
+  margin-top: 60px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#TimePicker .timeline {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 70px;
+  margin-top: 50px;
+  height: 30px;
+  position: relative;
+  margin: auto;
+}
+
+#TimePicker .timeline > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+#TimePicker .timeline .hours .tick {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  position: relative;
+}
+
+#TimePicker .timeline .hours .tick .marker {
+  position: absolute;
+  height: 50%;
+  width: 1px;
+  background: white;
+  left: 0;
+  bottom: 0;
+}
+
+#TimePicker .timeline .hours .tick .hourLabel {
+  position: absolute;
+  width: 45px;
+  text-align: center;
+  color: white;
+  top: 31px;
+  left: -21px;
+}
+
+#TimePicker .timeline .mins .min {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+#TimePicker .timeline .mins .min:hover {
+  border-right: 1px solid red;
+}
+
+#TimePicker .timeline .picker-tasks .task-preview {
+  position: absolute;
+  left: 0;
+  height: 20px;
+  width: 0px;
+  background: lightblue;
+  border-radius: 5px;
+  top: 10px;
 }
 
 @media screen and (max-width: 600px) {
@@ -1020,6 +1173,13 @@ body.droppable {
   vertical-align: top;
 }
 
+#App .plannedTasks .section,
+#PlannedTaskPicker .task-list .section {
+  margin-top: 4px;
+  color: white;
+}
+
+#App .plannedTasks .task,
 #PlannedTaskPicker .task-list .task {
   width: 100%;
   text-align: left;
@@ -1029,16 +1189,31 @@ body.droppable {
   padding-left: 4px;
 }
 
+#App .plannedTasks .task .time-status,
+#PlannedTaskPicker .task-list .task .time-status {
+  display: inline-block;
+  border: 1px solid gray;
+  font-size: 12px;
+  padding: 1px 4px;
+  position: relative;
+  bottom: 2px;
+  border-color: white;
+  color: white;
+}
+
+#App .plannedTasks .task .icon,
 #PlannedTaskPicker .task-list .task .icon {
   display: inline-block;
   font-size: 28px;
 }
 
+#App .plannedTasks .task .icon i,
 #PlannedTaskPicker .task-list .task .icon i {
   font-size: 32px;
   margin-top: 0px;
 }
 
+#App .plannedTasks .task .name,
 #PlannedTaskPicker .task-list .task .name {
   display: inline-block;
   position: relative;
@@ -1049,6 +1224,7 @@ body.droppable {
   color: white;
 }
 
+#App .plannedTasks .task .backdrop,
 #PlannedTaskPicker .task-list .task .backdrop {
   display: inline-block;
   padding: 8px;
@@ -1056,10 +1232,12 @@ body.droppable {
   border-radius: 8px;
 }
 
+#App .plannedTasks .task .backdrop.completed,
 #PlannedTaskPicker .task-list .task .backdrop.completed {
   opacity: .5;
 }
 
+#App .plannedTasks .task input[type=checkbox].completed,
 #PlannedTaskPicker .task-list .task input[type=checkbox].completed {
   margin: 0 5px 0 0;
   width: 15px;
@@ -1067,5 +1245,27 @@ body.droppable {
   position: relative;
   bottom: 2px;
   cursor: pointer;
+}
+
+#App .plannedTasks {
+  margin-top: 55px;
+}
+
+#App .plannedTasks .section {
+  color: black;
+}
+
+#App .plannedTasks .task:hover {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+#App .plannedTasks .task .name {
+  color: #5a5a5a;
+}
+
+#App .plannedTasks .task .time-status {
+  border-color: #bdbdbd;
+  color: #5a5a5a;
 }
 /*# sourceMappingURL=styles.css.map */

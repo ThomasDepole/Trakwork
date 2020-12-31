@@ -4,12 +4,13 @@ var Tasks = new Array();
 var Settings = new Array();
 var TaskStyles = new Array();
 var PlannedTasks = new Array();
+var Events = new Array();
 var Estimates = new Array();
 var TaskPickerTypes = new Array();
 var DayProgressMax = 480;
 var DefaultDayLength = 480;
 var icons; //loaded in index TODO find a better way to load these
-
+var userkey = "tdepole";
 
 $(document).ready(function(){
     LoadPlannedTasks();
@@ -18,8 +19,8 @@ $(document).ready(function(){
     LoadEstimates();
     RenderEstimates();
     ClockTick();
+    $(".sync-btn").click(SyncData);
 });
-
 
 /***************
  * Models 
@@ -88,6 +89,15 @@ var PlannedTask = function(){
 
     this.GetColor = function(){
         return $.grep(TaskStyles, function(e){ return e.name == self.color })[0];
+    }
+
+    this.GetTasks = function(){
+        var tasks = [];
+        Tasks.forEach(task => {
+            if(task.plannedTaskId == self.id)
+                tasks.push(task);
+        });
+        return tasks;
     }
 }
 
@@ -300,53 +310,72 @@ function groupBy(list, keyGetter) {
     return map;
 }
 
-
-
-
 /************************
  *  Saving and Loading 
  ************************/
+var SKeys = {
+    Settings : "settings",
+    Tasks : "tasks",
+    Plans : "plans",
+    Estimates : "estimates"
+};
+
 //Settings
-function LoadSettings(){
-    setingsStorage = $.parseJSON(localStorage.getItem("settings"));
-    SetSetting("DayLength", DefaultDayLength);
+function LoadSettings(data){
+    setingsStorage = $.parseJSON(localStorage.getItem(SKeys.Settings));
+    
+    //use data passed in 
+    if(typeof data !== "undefined")
+        setingsStorage = data;
+
+    SetSetting("DayLength", DefaultDayLength, false);
+    SetSetting("AutoSave", false, false);
 
     if(setingsStorage != null){
         for(var i in setingsStorage){
-            SetSetting(setingsStorage[i].key, setingsStorage[i].value);
+            SetSetting(setingsStorage[i].key, setingsStorage[i].value, false);
         }
     }
 
-
     RenderTasks(".Tasks");
     RenderDayProgress();
+    BindSettingsUI();
 }
 function SaveSettings(){
-    localStorage.setItem("settings", JSON.stringify(Settings));
+    localStorage.setItem(SKeys.Settings, JSON.stringify(Settings));
+
+    if(GetSetting("AutoSave") === true)
+        UploadLocalData(SKeys.Settings);
 }
 
 //Tasks
-function LoadTasks(){
-    temp = $.parseJSON(localStorage.getItem("tasks"));
+function LoadTasks(data){
+    Tasks = [];
+    var temp = $.parseJSON(localStorage.getItem(SKeys.Tasks));
+
+    //use data passed in 
+    if(typeof data !== "undefined")
+        temp = data;
+
     if(temp != null){
         for(var i in temp){
             Tasks.push(new Task());
             var id = Tasks.length - 1;
-            Tasks[id].type =  temp[i].type;
-            Tasks[id].name =  temp[i].name;
-            Tasks[id].start = temp[i].start;
-            Tasks[id].end = temp[i].end;
-            Tasks[id].link_id = temp[i].link_id;
-            Tasks[id].notes = temp[i].notes;
-            Tasks[id].plannedTaskId = temp[i].plannedTaskId;
-            Tasks[id].estimate = temp[i].estimate;
+            Tasks[id].type =  (temp[i].type == "") ? null : temp[i].type;
+            Tasks[id].name =  (temp[i].name == "") ? null : temp[i].name;
+            Tasks[id].start = (temp[i].start == "") ? null : temp[i].start;
+            Tasks[id].end = (temp[i].end == "") ? null : temp[i].end;
+            Tasks[id].link_id = (temp[i].link_id == "") ? null : temp[i].link_id;
+            Tasks[id].notes = (temp[i].notes == "") ? null : temp[i].notes;
+            Tasks[id].plannedTaskId = (temp[i].plannedTaskId == "") ? null : temp[i].plannedTaskId;
+            Tasks[id].estimate = (temp[i].estimate == "") ? null : temp[i].estimate;
 
-            if(typeof temp[i].color == "undefined" )
+            if(typeof temp[i].color == "undefined" || temp[i].color == "" )
                 Tasks[id].color = $.grep(TaskStyles, function(e){ return e.name == "silver" })[0];
             else
                 Tasks[id].color = temp[i].color;
 
-            if(typeof temp[i].icon == "undefined" )
+            if(typeof temp[i].icon == "undefined" || temp[i].icon == "")
                 Tasks[id].icon = "fa-exclamation";
             else
                 Tasks[id].icon = temp[i].icon;
@@ -358,17 +387,25 @@ function LoadTasks(){
     RenderDayProgress();
 }
 function SaveTasks(){
-    console.log("saved" + Tasks);
     for(var i = 0; Tasks.length > i; i++){
         var endDate = getTimeValues(new Date(Tasks[i].end));
         //console.log(Tasks[i].name + " = " + endDate[0] + ":" + endDate[1]);
     }
-    localStorage.setItem("tasks", JSON.stringify(Tasks));
+    localStorage.setItem(SKeys.Tasks, JSON.stringify(Tasks));
+
+    if(GetSetting("AutoSave") === true)
+        UploadLocalData(SKeys.Tasks);
 }
 
 //Planned Tasks
-function LoadPlannedTasks(){
-    var taskModels = $.parseJSON(localStorage.getItem("plans"));
+function LoadPlannedTasks(data){
+    PlannedTasks = [];
+    var taskModels = $.parseJSON(localStorage.getItem(SKeys.Plans));
+
+    //use data passed in 
+    if(typeof data !== "undefined")
+        taskModels = data;
+
     if(taskModels == null)
         return;
     
@@ -395,15 +432,20 @@ function LoadPlannedTasks(){
     });
 }
 function SavePlannedTasks(){
-    localStorage.setItem("plans", JSON.stringify(PlannedTasks));
+    localStorage.setItem(SKeys.Plans, JSON.stringify(PlannedTasks));
+
+    if(GetSetting("AutoSave") === true)
+        UploadLocalData(SKeys.Plans);
 }
 
 //Estimates
-function SaveEstimates(){
-    localStorage.setItem("estimates", JSON.stringify(Estimates));
-}
-function LoadEstimates(){
-    estimateStorage = $.parseJSON(localStorage.getItem("estimates"));
+function LoadEstimates(data){
+    Estimates = [];
+    estimateStorage = $.parseJSON(localStorage.getItem(SKeys.Estimates));
+
+    //use data passed in 
+    if(typeof data !== "undefined")
+        estimateStorage = data;
 
     if(estimateStorage != null){
         for(var i in estimateStorage){
@@ -411,6 +453,48 @@ function LoadEstimates(){
         }
     }
     RenderDayProgress();
+}
+function SaveEstimates(){
+    localStorage.setItem(SKeys.Estimates, JSON.stringify(Estimates));
+
+    if(GetSetting("AutoSave") === true)
+        UploadLocalData(SKeys.Estimates);
+}
+
+//Sync data from cloud 
+function SyncData(){
+    $(".startDay").slideUp();
+    $.get("/api/load.php", {userkey:userkey}, function(res){
+        var payload = JSON.parse(res);
+        if(typeof payload !== "object")
+            return;
+
+        payload.Settings = JSON.parse(payload.Settings);
+        payload.Tasks = JSON.parse(payload.Tasks);
+        payload.Plans = JSON.parse(payload.Plans);
+        payload.Estimates = JSON.parse(payload.Estimates);
+
+        LoadPlannedTasks(payload.Plans);
+        LoadTasks(payload.Tasks);
+        LoadSettings(payload.Settings);
+        LoadEstimates(payload.Estimates);
+
+        if(typeof LoadPlanners === "function")
+            LoadPlanners();
+    });
+}
+function UploadLocalData(source){
+    console.log("Upload From " + source);
+    var payload = {
+        Settings : localStorage.getItem(SKeys.Settings),
+        Tasks : localStorage.getItem(SKeys.Tasks),
+        Plans : localStorage.getItem(SKeys.Plans),
+        Estimates : localStorage.getItem(SKeys.Estimates)
+    };
+    
+    $.post("/api/save.php", {userkey : userkey, payload: payload}, function(res){
+
+    });
 }
 
 /***************
@@ -634,6 +718,7 @@ function RenderTasks(selector){
     $(".tasks .task").unbind();
     $(selector).html("");
 
+    //tasks
     for(var i in Tasks){
         var t = Tasks[i];
         var color = t.color;
@@ -661,10 +746,67 @@ function RenderTasks(selector){
         $(selector).append(div);
     }
 
+    //task click action
     $(".tasks .task").click(function(){
         var id = $(this).attr("data-task_id");
         TaskDetails.OpenTask(id);
     });
+
+    //planned tasks 
+    RenderPlannedTasks("#App .plannedTasks", false);
+}
+
+function RenderPlannedTasks(selector, showCompleted){
+    $(selector).html("");
+        
+    var startedTasks = [];
+    var shortTasks = [];
+    var longTasks = [];
+
+    PlannedTasks.forEach(task =>{
+        if(!TimeCalc.DatesAreOnSameDay(new Date, task.date))
+            return;
+
+        if(task.completed && !showCompleted)
+            return;
+
+        if(task.GetTasks().length > 0){
+            startedTasks.push(task);
+            return;
+        }
+
+        if(task.estimate > .5){
+            longTasks.push(task);
+            return;
+        }
+        
+        shortTasks.push(task);
+    });
+
+    function AddTaskToUI(task){
+        $(selector).append(`<div class="task quickTaskOption" data-type="planned" data-id="${task.id}" color: ${task.GetColor().fontcolor} ;">
+                            <input class="completed" type="checkbox" ${(task.completed ? "checked=checked" : "")} name="taskCompleted" value="${task.id}" />
+                            <div class="backdrop ${(task.completed ? "completed" : "")}" style="background: ${task.GetColor().color} ;">
+                                <div class="icon"><i class="fa ${task.icon}"></i></div>
+                            </div>
+                            <div class="name">${task.name} ${RenderPlannedTaskTimeStatus(task)}</div>
+                        </div>`);
+    }
+
+    if(startedTasks.length > 0){
+        $(selector).append('<div class="section">Started</div>');
+        startedTasks.forEach(task => { AddTaskToUI(task) });
+    }
+
+    if(shortTasks.length > 0){
+        $(selector).append('<div class="section">Short Tasks</div>');
+        shortTasks.forEach(task => { AddTaskToUI(task) });
+    }
+    
+    if(longTasks.length > 0){
+        $(selector).append('<div class="section">Long Tasks</div>');
+        longTasks.forEach(task => { AddTaskToUI(task) });
+    }
 }
 
 function RenderDayProgress(){
@@ -806,7 +948,39 @@ function RenderDayProgress(){
             }
 
             remainingWidth -= plannedWidth;
-            $(".DayProgress").append(`<div class="plannedTaskTime ${activeClass}" style="width: ${plannedWidth}%; background: ${task.GetColor().color}"></div>`);
+            $(".DayProgress").append(`<div class="plannedTaskTime ${activeClass}" style="width: ${plannedWidth}%; background: ${task.GetColor().color}" data-planid="${task.id}"></div>`);
+        });
+
+        //render tasks with deadline, calendar events 
+        pptasks.forEach(task => {
+            if(task.deadline == null || task.deadline == "")
+                return;
+                
+            var firstTaskHour = TimeCalc.TotalHoursOfDay(Tasks[0].start);
+            var endofDay = maxhour / 60;
+            var end = TimeCalc.TotalHoursOfDay(task.deadline);
+            var start = end - task.estimate;
+
+            //adjust all the times so they exclude the start time
+            start -= firstTaskHour;
+
+
+            var left = (start / endofDay) * 100;
+            var width =  (task.estimate / endofDay) * 100;
+
+            
+            var endMoment = moment(task.deadline);
+            var endLabel = endMoment.format("h:mm a");
+            var startLabel = endMoment.subtract(task.estimate, 'hours').format("h:mm a");
+
+            
+            $(".DayProgress").append(`
+                                <div class="event" 
+                                    style="width: ${width}%; left:${left}%; background: ${task.GetColor().color}" 
+                                    data-planid="${task.id}">
+                                    <div class="start">${startLabel}</div>
+                                    <div class="end">${endLabel}</div>    
+                                </div>`)
         });
 
         if(Tasks.length != 0){
@@ -838,6 +1012,11 @@ function RenderDayProgress(){
         $(".DayProgress div").click(function(){
             var ticket = $(this).attr("data-task_id");
             $(".tasks").find("[data-task_id='" + ticket + "']").trigger("click");
+        });
+
+        $("[data-planid]").click(function(){
+            var id = $(this).attr("data-planid");
+            TaskPicker.PrefillPlannedTask(id);
         });
     }
 }
@@ -886,7 +1065,6 @@ function RenderDayReport(){
                 //Add End Day
                 html += '<tr class="endday"> <td > '+colCount+' </td> <td> '+Tasks[i].name+' </td> <td> '+Tasks[i].StartTime()+' </td> <td>  </td> <td> </td> <td>'+ TotalDayHours.toFixed(2) +'</td> </tr> ';
             }
-
 
             // add linked tasks
             html += linkedtaskshtml;
@@ -959,13 +1137,13 @@ function RenderEstimates(){
 }
 
 //work in progress
-function RenderTaskTimeStatus(estimate, logged){
-    var estimateTxt = estimate + " hours";
+function RenderPlannedTaskTimeStatus(plannedTask){
+    var estimateLabel = TimeCalc.TimeLabel_FromMins(plannedTask.estimate * 60);
 
     var html = `<div class="time-status">
-                    <span>${estimateTxt}</span>
-                    <div class=""></div>
-                </div>"`
+                    <span>${estimateLabel}</span>
+                </div>`
+    return html;
 }
 
 /***************
@@ -990,7 +1168,10 @@ function Setting(key, value){
     this.value = value;
 }
 
-function SetSetting(key, value){
+function SetSetting(key, value, triggerSave){
+    if(typeof triggerSave === "undefined")
+        triggerSave = true;
+
     var count = 0;
     for(var i in Settings){
         if(Settings[i].key == key){
@@ -1002,7 +1183,9 @@ function SetSetting(key, value){
     if(count == 0){
         Settings.push(new Setting(key, value));
     }
-    SaveSettings();
+
+    if(triggerSave)
+        SaveSettings();
 }
 
 function GetSetting(key){
@@ -1051,6 +1234,9 @@ var TimeCalc = new function TimeCalculator(){
     this.TimeLabel_FromMins = function(totalMins){
         var hours = Math.floor(totalMins / 60);  
         var minutes = totalMins % 60;
+        if(hours == 0)
+            return minutes + "m";
+
         return hours + "h " + minutes + "m";     
     }
 
@@ -1060,6 +1246,14 @@ var TimeCalc = new function TimeCalculator(){
                 first.getMonth() === second.getMonth() &&
                 first.getDate() === second.getDate()
             );
+    }
+
+    this.TotalHoursOfDay = function(date){
+        var m = moment(date);
+        var hours = parseInt(m.format("H"));
+        var mins = parseInt(m.format("m"));
+        var percentage = mins / 60;
+        return hours + percentage;
     }
 }
 

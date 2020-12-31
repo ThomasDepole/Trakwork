@@ -42,7 +42,7 @@ var ColorPicker = function(elm, strippedColors){
         elm.find('input[name="colorPreview"]').css("background", style.color);
     }
 
-    this.Reset = function(){
+    this.reset = function(){
         _colorPicker.setOption("green");
         _colorPicker.ShowSolidColors();
     }
@@ -54,6 +54,19 @@ var ColorPicker = function(elm, strippedColors){
 
     this.hideOptions = function(){
         elm.find(".options").fadeOut();
+    }
+
+    this.GetValue = function(){
+        var styleName = elm.find('input[name="color"]').val();
+        return $.grep(TaskStyles, function(e){ return e.name == styleName; })[0];
+    }
+
+    this.disable = function(){
+        elm.find(".inputBoxLabel, [name=colorPreview]").hide();
+    }
+
+    this.enable = function(){
+        elm.find(".inputBoxLabel, [name=colorPreview]").show();
     }
 
     //bind the click handler
@@ -132,8 +145,6 @@ var StartTimePicker = function(elm, label, restrictDate){
         return date;
     }
 
-
-
     this.increment = function(direction){
         var newTime = new Date(currentDate());
 
@@ -147,6 +158,14 @@ var StartTimePicker = function(elm, label, restrictDate){
             newTime = newTime.subtrackMinutes(30);
 
         _startTimePicker.setStartTime(newTime);
+    }
+
+    this.disable = function(){
+        elm.find(".inputBoxLabel, [name=startTimeDisplay]").hide();
+    }
+
+    this.enable = function(){
+        elm.find(".inputBoxLabel, [name=startTimeDisplay]").show();
     }
 
     elm.find(".increase").click(function(){
@@ -194,7 +213,7 @@ var EstimatePicker = function(elm, minValueInHours){
         HideOnMouseLeave(elm, _estimatePicker.hideOptions, 600);
     }
 
-    this.Reset = function(){
+    this.reset = function(){
         if(typeof minValueInHours === "number")
             this.setEstimate(minValueInHours);
         else
@@ -203,6 +222,14 @@ var EstimatePicker = function(elm, minValueInHours){
 
     this.GetValue = function(){
         return this.estimate;
+    }
+
+    this.disable = function(){
+        elm.find(".inputBoxLabel, [name=estimateDisplay]").hide();
+    }
+
+    this.enable = function(){
+        elm.find(".inputBoxLabel, [name=estimateDisplay]").show();
     }
 
     //bind the click handler
@@ -271,4 +298,137 @@ var IconPicker = function(elm){
         elm.find('.iconDisplay').attr("class", "iconDisplay fa " + icon);
     }
 
+    this.disable = function(){
+        elm.find(".inputBoxLabel, .iconDisplay").hide();
+    }
+
+    this.enable = function(){
+        elm.find(".inputBoxLabel, .iconDisplay").show();
+    }
+}
+
+var DeadLinePicker = function(elm, estimatePicker, colorPicker){
+    var self = this;
+    elm.addClass("propertyPicker deadlinePicker");
+    elm.html(`<div class="inputBoxLabel">Deadline</div>
+              <input type="text" name="selectedTimeDisplay" />
+              <input type="hidden" name="selectedTimeValue" />
+              `);
+
+    //private vars
+    var picker = $("#TimePicker"); //added to dom below
+    var selectedDate = picker.find(".selectedTime");
+    var label = elm.find("[name=selectedTimeDisplay]");
+    var value = elm.find("[name=selectedTimeValue]");
+    var rendered = false;
+    var date = moment();
+
+    //click events
+    elm.find(".inputBoxLabel, [name=selectedTimeDisplay]").click(function(){ self.show(); });
+    
+    this.reset = function(){
+        label.val("none");
+        value = null;
+        date = null;
+    }
+
+    this.show = function(){
+        self.render();
+        picker.show();
+
+        //calculate the width of the task
+        var estimate = estimatePicker.GetValue();
+        var color = colorPicker.GetValue();
+        var percentage = (estimate / 24) * 100;
+        picker.find(".task-preview").css({"width": percentage + "%", "margin-left": percentage * -1 + "%", "background-color": color.color});
+
+        //set the default value
+        date = moment();
+        var timestamp = date.format('H:') + "0";
+        var min = picker.find(`[data-timestamp='${timestamp}']`);
+        min.trigger("mouseenter");
+    }
+
+    this.hide = function(){
+        picker.hide();
+    }
+
+    this.render = function(){
+        if(rendered)
+            return;
+        rendered = true;
+
+        //render the timeline
+        var hourTicks = "";
+        var minsTicks = "";
+        var tasksHtml = "";
+
+        //build out the picker interface
+        for(var h = 1; h < 25; h++){
+            //add mins 
+            for(var m = 0; m<12; m++){
+                minsTicks += `<div class="min" data-timestamp="${h}:${m}" data-hour="${h}" data-min="${m*5}"></div>`
+            }
+            
+            //add hours
+            var hour = "";
+            if(h < 12) hour = h + "am";
+            else if(h == 12) hour = "12pm"
+            else hour = (h - 12) + "pm";
+
+            hourTicks += 
+                `<div class="tick" data-hour="${h}">
+                    <div class="marker"></div>
+                    <div class="hourLabel">${hour}</div>
+                </div>`
+        }
+
+        //add in tasks
+        tasksHtml = `<div class="task-preview"></div>`;
+
+        //add html to the page
+        picker.find(".timeline .hours").html(hourTicks);
+        picker.find(".timeline .mins").html(minsTicks);
+        picker.find(".timeline .picker-tasks").html(tasksHtml);
+    }
+
+    this.disable = function(){
+        elm.find(".inputBoxLabel, [name=selectedTimeDisplay]").hide();
+    }
+
+    this.enable = function(){
+        elm.find(".inputBoxLabel, [name=selectedTimeDisplay]").show();
+    }
+
+    this.getValue = function(){
+
+    }
+
+    picker.delegate(".min", "mouseover", function(){
+        var left = $(this).position().left;
+        var hour = $(this).attr("data-hour");
+        var min = $(this).attr("data-min");
+        var zz = "am";
+
+        if(hour > 12){
+            hour = hour - 12;
+            zz = "pm";
+        }
+        if(hour == 12) zz = "pm";
+        if(min < 10) min = "0" + min;
+
+        var dateLabel = `${hour}:${min}${zz}`;
+        selectedDate.html(dateLabel);
+        elm.find('[name=selectedTimeDisplay]').val(dateLabel);
+        picker.find(".task-preview").css({"left": left});
+    });
+
+    picker.find(".exit").click(function(){
+        self.hide();
+        self.reset();
+    });
+
+    picker.find(".selectBtn, .timeline").click(function(){
+        self.hide();
+    });
 }

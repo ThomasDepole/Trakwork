@@ -11,15 +11,12 @@
 			
 				<div class="type-options" style="display: none;">
                     <span class="typelabel"> Name </span>  <input type="text" name="name" value="" />
-                    <br  />
-                    <br  />
+                    <br />
+                    <br />
 
                     <div class="estimate"></div>
-
                     <div class="startTime"></div>
-
                     <div class="colorPicker"></div>
-
                     <div class="iconPicker"></div>
 
                     <input type="hidden" name="resumeTaskID"/>

@@ -13,6 +13,7 @@
 		<div class="progress-times"></div>
 		<div class="Estimates"></div>
 		<div class="dayReport"></div>
+		<div class="plannedTasks"></div>
 	</div>
 
 	<script>

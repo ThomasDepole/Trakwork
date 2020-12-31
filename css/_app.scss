@@ -150,12 +150,18 @@ label {
 	color: rgb(213, 128, 0)
 }
 
+.sync-btn,
 .settings{
 	font-size: 22px !important;
 	color: #DADADA;
 	position: relative;
 	top: 9px;
-	cursor: pointer;
+    cursor: pointer;
+    margin-left: 9px;
+}
+
+.sync-btn{
+    color: #5d9cb1;
 }
 
 .DayProgress {
@@ -168,8 +174,13 @@ label {
     -webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
-    overflow: hidden;
+    //@at-root: hidden;
     position: relative;
+
+    > div:first-child{
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
     
     .plannedTaskTime{
         background-image: linear-gradient(45deg, #b3b3b3 6.52%, #ededed 6.52%, #ededed 50%, #b3b3b3 50%, #b3b3b3 56.52%, #ededed 56.52%, #ededed 100%);
@@ -178,6 +189,37 @@ label {
 
         &.active{
             opacity: .65;
+        }
+    }
+
+    .event {
+        position: absolute;
+        height: 50%;
+        background: red;
+        bottom: 55px;
+        border-radius: 4px;
+
+        .start {
+            display: none;
+            position: absolute;
+            left: -78px;
+            width: 75px;
+            text-align: right;
+            top: 2px;
+        }
+
+        .end{
+            display: none;
+            position: absolute;
+            right: -78px;
+            width: 75px;
+            top: 2px;
+        }
+
+        &:hover{
+            .start, .end{
+                display: block;
+            }
         }
     }
 
@@ -457,6 +499,12 @@ height: 100px;
     vertical-align: top;
 }
 
+.deadlinePicker{
+    input{
+        width: 71px;
+    }
+}
+
 #CreatePlannedTaskModal,
 #starttaskmodal {
     .typeLabel + input{
@@ -564,6 +612,118 @@ height: 100px;
         font-size: 19px;
     }
 }
+
+#TimePicker {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000d4;
+    z-index: 1200;
+
+    .exit {
+        color: white;
+        font-size: 23px;
+        position: absolute;
+        right: 20%;
+        top: 30px;
+        cursor: pointer;
+    }
+
+    .selectedTime {
+        color: white;
+        text-align: center;
+        font-size: 70px;
+        margin-top: 100px;
+    }
+
+    .selectBtn {
+        width: 147px;
+        background: #2dbb2d;
+        color: white;
+        margin: auto;
+        margin-top: 60px;
+        text-align: center;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .timeline {
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 70px;
+        margin-top: 50px;
+        height: 30px;
+        position: relative;
+        margin: auto;
+
+        & > div{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: row;
+        }
+
+        .hours{
+            .tick {
+                flex-grow: 1;
+                position: relative;
+                //z-index: 100;
+        
+                .marker{
+                    position: absolute;
+                    height: 50%;
+                    width: 1px;
+                    background: white;
+                    left: 0;
+                    bottom: 0;
+                }
+        
+                .hourLabel{
+                    position: absolute;
+                    width: 45px;
+                    text-align: center;
+                    color: white;
+                    top: 31px;
+                    left: -21px;
+                }
+            }
+        }
+
+        .mins{
+            .min {
+                flex-grow: 1;
+                
+                &:hover{
+                    border-right: 1px solid red;
+                }
+            }
+        }
+
+        .picker-tasks{
+            .task-preview {
+                position: absolute;
+                left: 0;
+                height: 20px;
+                width: 0px;
+                background: lightblue;
+                border-radius: 5px;
+                top: 10px;
+            }
+        }
+
+    }
+}
+
+
 
 @media screen and (max-width: 600px){
     .tasks .task,

@@ -67,5 +67,5 @@
         <span class="divider">|</span>
         <a href="<?php echo $siteurl; ?>/plan.php" class="<?php echo (strpos($_SERVER['REQUEST_URI'], 'plan') !== false) ?  "active" : "" ; ?>">Plan</a>
     </div>
-    <div style="float:right"><i class="fa fa-cog settings"></i></div>
+    <div style="float:right"><i class="fa fa-refresh sync-btn"></i><i class="fa fa-cog settings"></i></div>
 </div>

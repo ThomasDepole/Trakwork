@@ -15,6 +15,7 @@ var CreatePlannedTaskModal = new function(){
     this.startTimePicker = new StartTimePicker( self.elm.find(".startTime"), 'Deadline', false );
     this.estimate = new EstimatePicker( this.elm.find(".estimate"), .25);
     this.iconPicker = new IconPicker(this.elm.find(".iconPicker"));
+    this.deadlinePicker = new DeadLinePicker(this.elm.find(".deadlinePicker"), this.estimate, this.colorPicker);
 
     this.elm.find(".modal-footer .btn").hover(function(){
         self.colorPicker.hideOptions();
@@ -54,8 +55,10 @@ var CreatePlannedTaskModal = new function(){
         self.elm.find('input[name="goal"]').val("");
         self.elm.find('input[name="resumeTaskID"]').val("");
         self.elm.find('[name=notes]').val("");
-        self.estimate.Reset();
+        self.estimate.reset();
+        self.deadlinePicker.reset();
         self.startTimePicker.clearDate();
+        self.startTimePicker.disable();//not used for planned tasks
         self.colorPicker.setOption("stripe-green");
         self.iconPicker.SelectIcon("fa-file-o");
         self.reopenBtn.hide();

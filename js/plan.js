@@ -154,7 +154,11 @@ var DayPlanner = function(date){
     AllPlanners.push(self);
 }
 
-$(function(){
+
+function LoadPlanners(){
+    AllPlanners = [];
+    $("#Planner").html("");
+
     for(var i = 0; i < 12; i++){
         var date = new Date();
         date.setDate(date.getDate() + i);
@@ -165,4 +169,8 @@ $(function(){
         for(var i=0; i<AllPlanners.length; i++)
             AllPlanners[i].render();
     });
+}
+
+$(function(){
+   LoadPlanners();
 });

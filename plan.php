@@ -30,4 +30,5 @@
     include 'includes/footer.php'; 
     include 'includes/CreatePlannedTaskModal.php';
     include 'includes/TaskModal.php'; 
+    include 'includes/SettingsModal.php'; 
 ?>

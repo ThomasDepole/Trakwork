@@ -212,55 +212,94 @@ body.droppable{
     }
 }
 
-#PlannedTaskPicker{
-    .task-list{
-        .task{
-            width: 100%;
-            text-align: left;
-            height: 49px;
+#App .plannedTasks,
+#PlannedTaskPicker .task-list{
+    .section{
+        margin-top: 4px;
+        color: white;
+    }
+
+    .task{
+        width: 100%;
+        text-align: left;
+        height: 49px;
+        position: relative;
+        overflow: hidden;
+        padding-left: 4px;
+
+        .time-status {
+            display: inline-block;
+            border: 1px solid gray;
+            font-size: 12px;
+            padding: 1px 4px;
             position: relative;
-            overflow: hidden;
-            padding-left: 4px;
-            
-            .icon{
-                display: inline-block; 
-                font-size: 28px;
+            bottom: 2px;
+            border-color: white;
+            color: white;
+        }
+        
+        .icon{
+            display: inline-block; 
+            font-size: 28px;
 
-                i{
-                    font-size: 32px;
-                    margin-top: 0px;
-                }
+            i{
+                font-size: 32px;
+                margin-top: 0px;
             }
-            
-            .name{
-                display: inline-block;
-                position: relative;
-                bottom: 5px;
-                font-size: 17px;
-                overflow: visible;
-                margin-left: 4px;
-                color: white;
-            }
+        }
+        
+        .name{
+            display: inline-block;
+            position: relative;
+            bottom: 5px;
+            font-size: 17px;
+            overflow: visible;
+            margin-left: 4px;
+            color: white;
+        }
 
-            .backdrop{
-                display: inline-block;
-                padding: 8px;
-                color: white;
-                border-radius: 8px;
+        .backdrop{
+            display: inline-block;
+            padding: 8px;
+            color: white;
+            border-radius: 8px;
 
-                &.completed{
-                    opacity: .5;
-                }
+            &.completed{
+                opacity: .5;
             }
+        }
 
-            input[type=checkbox].completed{
-                margin: 0 5px 0 0;
-                width: 15px;
-                height: 16px;
-                position: relative;
-                bottom: 2px;
-                cursor: pointer;
-            }
+        input[type=checkbox].completed{
+            margin: 0 5px 0 0;
+            width: 15px;
+            height: 16px;
+            position: relative;
+            bottom: 2px;
+            cursor: pointer;
+        }
+    }
+}
+
+#App .plannedTasks{
+    margin-top: 55px;
+
+    .section{
+        color: black;
+    }
+
+    .task{
+        &:hover{
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+
+        .name{
+            color: #5a5a5a;
+        }
+
+        .time-status{
+            border-color: #bdbdbd;
+            color: #5a5a5a;
         }
     }
 }

@@ -26,6 +26,17 @@
                     <input id="BarStyleDetailed" type="radio" name="progressBarStyle" value="detailed"> <label for="BarStyleDetailed">Detailed</label>
                 </div>
 
+                <div class="cloud-backup">
+                    <b>Auto Save</b>
+                    <label>
+                        <input type="radio" name="AutoSaveData" value="true" />
+                        Enable
+                    </label>
+                    <label>
+                        <input type="radio" name="AutoSaveData" value="false" />
+                        Disable
+                    </label>
+                </div>
 
                 <!--
                 <div class="section">
@@ -53,19 +64,43 @@
             $("#SettingsModal").modal();
         });
 
-        $("#SettingsModal input[name=daylength]").val(GetSetting("DayLength") / 60);
-
         $("#SettingsModal .saveSettings").click(function(){
             SetSetting("DayLength",  $("#SettingsModal input[name=daylength]").val() * 60);
             SetSetting("ProgressBarStyle", $('#SettingsModal input:radio[name=progressBarStyle]:checked').val() );
             location.reload();
         });
 
+        $("[name=AutoSaveData]").click(function(){
+            if($(this).val() == "true"){
+                SetSetting("AutoSave", true, true);
+            }else{
+                SetSetting("AutoSave", false, true);
+            }
+        });
+
+        BindSettingsUI();
+    });
+
+    function BindSettingsUI(){
+        //day length
+        $("#SettingsModal input[name=daylength]").val(GetSetting("DayLength") / 60);
+
+        //progress style
         var progresBar = GetSetting("ProgressBarStyle");
         if (progresBar == null)
             progresBar = "gray";
 
         $('#SettingsModal input:radio[name=progressBarStyle]').val([progresBar]);
 
-    });
+        //auto save
+        var asval = GetSetting("AutoSave");
+        if(typeof asval === "boolean" && asval){
+            $('[name=AutoSaveData][value=true]').prop("checked", true);
+            $('[name=AutoSaveData][value=false]').prop("checked", false);
+        }else{
+            $('[name=AutoSaveData][value=true]').prop("checked", false);
+            $('[name=AutoSaveData][value=false]').prop("checked", true);
+        }
+
+    }
 </script>

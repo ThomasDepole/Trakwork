@@ -7,6 +7,7 @@ var TaskPicker = new function(){
     var self = this;
     var _taskpicker = this;
     this.elm = $("#StartTaskModal");
+    this.startBtn = this.elm.find(".go");
     this.quickPicker = this.elm.find("#QuickTaskPicker");
     this.popup = this.elm.find(".modal-content");
 
@@ -17,7 +18,9 @@ var TaskPicker = new function(){
     this.colorPicker = new ColorPicker( $("#StartTaskModal .colorPicker") );
     this.startTimePicker = new StartTimePicker( $("#StartTaskModal .startTime") );
     this.estimate = new EstimatePicker( this.elm.find(".estimate") );
+    this.deadLinePicker = new DeadLinePicker();
     this.iconPicker = new IconPicker(this.elm.find(".iconPicker"));
+    this.deadlinePicker = new DeadLinePicker(this.elm.find(".deadlinePicker"));
 
     this.elm.find(".modal-footer .btn").hover(function(){
         _taskpicker.colorPicker.hideOptions();
@@ -42,6 +45,7 @@ var TaskPicker = new function(){
         //Colors
         this.colorPicker.setOption(typeObject.color);
         this.HideQuickPicker();
+        this.startBtn.html("Start");
     }
 
     this.PrefillResumeTask = function(task_id){
@@ -60,10 +64,24 @@ var TaskPicker = new function(){
         self.elm.find(".type-options, .modal-footer").show();
         self.elm.find('input[name="resumeTaskID"]').val(task_id);
         self.elm.find('input[name="plannedTaskID"]').val(plannedId);
+
+        this.startBtn.html("Resume");
     }
 
     this.PrefillPlannedTask = function(plannedTaskId){
+        self.Reset();
         var task = $.grep(PlannedTasks, function(e){ return e.id == plannedTaskId })[0];
+
+        //make sure this task wasn't already started. side note: I hate how tasks are referenced by index and not an ID, was must I had been so lazy back then
+        if(task.GetTasks().length > 0){
+            for(var i = 0; i < Tasks.length; i++){
+                if(Tasks[i].plannedTaskId == task.id){
+                    self.PrefillResumeTask(i);
+                    return;
+                }
+            }
+        }
+
         self.HideQuickPicker();
 
         self.elm.find('input[name="name"]').val(task.name).removeClass("keypress-capture").hide();
@@ -77,6 +95,8 @@ var TaskPicker = new function(){
         self.colorPicker.ShowStripedColors();
         self.iconPicker.SelectIcon(task.icon);
         self.estimate.setEstimate(task.estimate);
+
+        self.startBtn.html("Start");
     }
 
     this.StartTask = function(){
@@ -157,28 +177,8 @@ var TaskPicker = new function(){
     }
 
     this.RenderQuickOptions = function(){
-        self.elm.find("#PlannedTaskPicker .task-list").html("");
-        PlannedTasks.forEach(task =>{
-            if(!TimeCalc.DatesAreOnSameDay(new Date, task.date))
-                return;
-
-            //check if this planned task has already been started
-            /*
-            for(var i = 0; i<Tasks.length; i++){
-                if(Tasks[i].plannedTaskId == task.id)
-                    return;
-            }
-            */
-
-            self.elm.find("#PlannedTaskPicker .task-list")
-                    .append(`<div class="task quickTaskOption" data-type="planned" data-id="${task.id}" color: ${task.GetColor().fontcolor} ;">
-                                <input class="completed" type="checkbox" ${(task.completed ? "checked=checked" : "")} name="taskCompleted" value="${task.id}" />
-                                <div class="backdrop ${(task.completed ? "completed" : "")}" style="background: ${task.GetColor().color} ;">
-                                    <div class="icon"><i class="fa ${task.icon}"></i></div>
-                                </div>
-                                <div class="name">${task.name}</div>
-                            </div>`);
-        });
+        RenderPlannedTasks("#PlannedTaskPicker .task-list", true);
+        RenderPlannedTasks("#App .plannedTasks", false);
         
         this.elm.find("#ResumeTaskOptions .task-list").html("");
         for(var i in Tasks){
@@ -210,13 +210,15 @@ var TaskPicker = new function(){
     }
 
     //bind click events for quick options
-    this.elm.delegate("#PlannedTaskPicker .completed", "click", function(e){
+    this.elm.delegate("#PlannedTaskPicker .completed", "click", PlannedTaskCompletedAction);
+    $("#App .plannedTasks").delegate(".completed", "click", PlannedTaskCompletedAction);
+    function PlannedTaskCompletedAction(e){
         var id = $(e.target).val();
         var task = GetPlannedTaskById(id);
         task.completed = $(e.target).is(':checked');
         UpdatePlannedTask(task);
         self.RenderQuickOptions();
-    });
+    }
 
     this.elm.delegate(".quickTaskOption", "click", function(e){
         if($(e.target).hasClass("completed"))
@@ -258,6 +260,15 @@ var TaskPicker = new function(){
         }
     });
 
+    //when a planned task is clicked on the main page
+    $("#App .plannedTasks").delegate(".quickTaskOption", "click", function(e){
+        if($(e.target).hasClass("completed"))
+            return;
+
+        var id = $(this).attr("data-id");
+        TaskPicker.PrefillPlannedTask(id);
+    });
+
     //keyboard events
     new TaskEditorKeyboardEvents(this.elm,this.StartTask,this.elm.find('input[name=name]'), null, this.estimate, this.startTimePicker, this.colorPicker);
 }
@@ -284,8 +295,6 @@ $(".type-option").click(function(){
 $("#StartTaskModal .go").click(function(){
     TaskPicker.StartTask();
 });
-
-
 
 $(".endDay-confirm").click(function(){
     $(".endDay-conform").hide();
